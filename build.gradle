@@ -1,0 +1,61 @@
+plugins {
+    id 'groovy'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id "ru.vyarus.quality" version "4.3.0"
+    id 'com.google.cloud.tools.jib' version '1.8.0'
+    id "com.avast.gradle.docker-compose" version "0.10.7"
+}
+
+group 'com.github.zobkov'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+jib {
+    from {
+        image = 'gcr.io/distroless/java:debug'
+    }
+    to {
+        image = "${group}/${rootProject.name}"
+    }
+    container {
+        mainClass = 'com.github.zobkov.webhook.App'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.apache.camel.springboot:camel-spring-boot-dependencies:3.3.0"
+    }
+}
+
+dependencies {
+    implementation 'org.kohsuke:github-api:1.108'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.2'
+    implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
+    implementation 'org.apache.camel:camel-jetty'
+    implementation 'org.apache.camel:camel-mail'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+tasks.build.dependsOn tasks.jibDockerBuild
+
+dockerCompose {
+    captureContainersOutput = true
+    stopContainers = true
+    removeContainers = true
+    removeImages = "All"
+    removeVolumes = true
+    removeOrphans =true
+}
+
+quality {
+    // To workaround: java.lang.NoClassDefFoundError: Lgroovy/text/TemplateEngine;
+    codenarcVersion = '1.6'
+}
