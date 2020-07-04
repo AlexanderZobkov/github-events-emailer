@@ -1,3 +1,5 @@
+language: groovy
+install: true
 script: ./gradlew clean build
 jdk:
-  - oraclejdk8
+  - openjdk8
