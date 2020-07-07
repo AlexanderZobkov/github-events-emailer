@@ -3,7 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id "ru.vyarus.quality" version "4.3.0"
-    id 'com.google.cloud.tools.jib' version '1.8.0'
+    id 'com.google.cloud.tools.jib' version '2.4.0'
     id "com.avast.gradle.docker-compose" version "0.10.7"
 }
 
@@ -17,7 +17,8 @@ jib {
         image = 'gcr.io/distroless/java:debug'
     }
     to {
-        image = "${group}/${rootProject.name}"
+        // Sometimes you need docker.io explicitly specified however the jib gradle plugin just chomp it.
+        image = "docker.io/docker.io/zobkov/${rootProject.name}"
     }
     container {
         mainClass = 'com.github.zobkov.webhook.App'
