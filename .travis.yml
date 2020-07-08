@@ -13,7 +13,7 @@ env:
 script: ./gradlew clean build
 
 before_deploy:
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - echo "$REGISTRY_PASS" | docker login -u "$REGISTRY_USER" --password-stdin
   - docker image ls
   - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
 deploy:
