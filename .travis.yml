@@ -8,7 +8,7 @@ jdk:
   - openjdk8
 
 env:
-  - IMAGE_NAME=zobkov/github-webhook
+  - IMAGE_NAME=zobkov/github-events-emailer
 
 script: ./gradlew clean build
 
