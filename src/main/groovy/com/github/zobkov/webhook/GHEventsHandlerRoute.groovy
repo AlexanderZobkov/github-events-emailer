@@ -48,7 +48,7 @@ class GHEventsHandlerRoute extends RouteBuilder {
     Closure<List<MimeMessage>> push = { Exchange exchange, GHEventPayload.Push event ->
         event.commits.collect { GHEventPayload.Push.PushCommit commit ->
             new MimeMessage((Session) null).tap {
-                from = event.pusher.email
+                setFrom(event.pusher.email)
                 subject = 'New commit in repository ' +
                         "${event.repository.fullName}/${event.ref - 'refs/heads/' - 'refs/tags/'} " +
                         "- ${commit.sha.take(7)} ${commit.message.readLines().first().take(50)}"
