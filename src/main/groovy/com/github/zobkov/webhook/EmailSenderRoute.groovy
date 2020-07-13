@@ -48,6 +48,7 @@ class EmailSenderRoute extends RouteBuilder {
                 .onException(MailConnectException)
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
+                .end()
                 .split(body())
                 .removeHeaders('*')
                 .process(prepareEmail())
