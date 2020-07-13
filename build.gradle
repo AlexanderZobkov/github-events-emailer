@@ -50,3 +50,9 @@ quality {
     // To workaround: java.lang.NoClassDefFoundError: Lgroovy/text/TemplateEngine;
     codenarcVersion = '1.6'
 }
+
+bootRun {
+    def props = new Properties()
+    file("application-tests.properties").withInputStream { props.load(it) }
+    systemProperties = props.collectEntries { it }
+}

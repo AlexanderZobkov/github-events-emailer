@@ -7,3 +7,6 @@ build
 *.iml
 *.ipr
 out
+
+### Properties used in smoke tests
+application-tests.properties
