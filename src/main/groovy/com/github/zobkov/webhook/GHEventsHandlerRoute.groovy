@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 import javax.mail.Session
+import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 /**
@@ -48,7 +49,7 @@ class GHEventsHandlerRoute extends RouteBuilder {
     Closure<List<MimeMessage>> push = { Exchange exchange, GHEventPayload.Push event ->
         event.commits.collect { GHEventPayload.Push.PushCommit commit ->
             new MimeMessage((Session) null).tap {
-                setFrom(event.pusher.email)
+                from = InternetAddress.parse(event.pusher.email).first()
                 subject = 'New commit in repository ' +
                         "${event.repository.fullName}/${event.ref - 'refs/heads/' - 'refs/tags/'} " +
                         "- ${commit.sha.take(7)} ${commit.message.readLines().first().take(50)}"
