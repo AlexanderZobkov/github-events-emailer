@@ -7,3 +7,23 @@ image:https://travis-ci.com/AlexanderZobkov/github-events-emailer.svg?branch=mas
 ```shell
 ./gradlew clean build
 ```
+
+== Usage
+
+=== Setting up a Webhook
+
+https://developer.github.com/webhooks/creating/
+
+The application supports webhooks that are setup in the following way:
+
+* Payload URL
+** It is set with plain HTTP with any path. Secured connection with SSL is not supported yet.
+* Content type
+** It is set to `application/json`. The `application/x-www-form-urlencoded` content type is not supported yet.
+* Secret
+** Could be leaved empty or set with any value. Payloads from github are not validated yet.
+* Events
+** The application will not crash if receive unexpected events
+however only the following events will result in an email:
+- https://developer.github.com/webhooks/event-payloads/#push[Pushes]
+- https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation]
