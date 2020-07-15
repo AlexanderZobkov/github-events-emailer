@@ -32,7 +32,7 @@ class WebHookReceiverRoute extends RouteBuilder {
     @SuppressWarnings('GStringExpressionWithinString')
     @Override
     void configure() throws Exception {
-        from("jetty:http://${webhookListenAddress}:${webhookListenPort}/github-webhook-receiver")
+        from("jetty:http://${webhookListenAddress}:${webhookListenPort}?matchOnUriPrefix=true")
                 .routeId('github-webhook')
                 .process(unmarshallEvent())
                 .choice()
