@@ -53,6 +53,12 @@ quality {
     codenarcVersion = '1.6'
 }
 
+bootJar {
+    manifest {
+        attributes 'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
+    }
+}
+
 bootRun {
     doFirst {
         def props = new Properties()
