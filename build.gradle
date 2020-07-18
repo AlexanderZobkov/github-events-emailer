@@ -42,6 +42,8 @@ dependencies {
     implementation 'org.apache.camel:camel-mail'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13'
+    testImplementation 'org.apache.camel:camel-test-spring'
+    testImplementation 'org.apache.camel:camel-spring-javaconfig'
 }
 
 tasks.build.dependsOn tasks.jibDockerBuild

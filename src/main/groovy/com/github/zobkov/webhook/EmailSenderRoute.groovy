@@ -44,7 +44,7 @@ class EmailSenderRoute extends RouteBuilder {
     int smtpServerRedeliveryDelay
 
     void configure() throws Exception {
-        from('seda:email-sender')
+        from('seda:email-sender').id('email-sender')
                 .onException(MailConnectException)
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
