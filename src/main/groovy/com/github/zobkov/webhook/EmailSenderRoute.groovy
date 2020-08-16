@@ -5,6 +5,8 @@ import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.lang.NonNull
 import org.springframework.stereotype.Component
@@ -22,6 +24,11 @@ import javax.mail.internet.MimeMessage
 @CompileStatic
 @Component
 class EmailSenderRoute extends RouteBuilder {
+
+    private static final Log LOG = LogFactory.getLog(EmailSenderRoute)
+
+    @Value('${smtp.debug}')
+    String smtpDebug
 
     @NonNull
     @Value('${smtp.recipients}')
@@ -53,7 +60,7 @@ class EmailSenderRoute extends RouteBuilder {
                 .removeHeaders('*')
                 .process(prepareEmail())
                 .to("smtp://admin@${smtpServerHost}:${smtpServerPort}?" +
-                        "password=secret&debugMode=true&connectionTimeout=${smtpServerConnectionTimeout}")
+                        "password=secret&debugMode=${smtpDebug}&connectionTimeout=${smtpServerConnectionTimeout}")
     }
 
     Processor prepareEmail() {
@@ -64,9 +71,12 @@ class EmailSenderRoute extends RouteBuilder {
                 exchange.in.body = message.content as String
                 exchange.in.headers.'To' = recipients
                 assert message.from
-                exchange.in.headers.'From' = message.from.first().toString()
-                assert message.subject
-                exchange.in.headers.'Subject' = message.subject
+                String from = message.from.first()
+                exchange.in.headers.'From' = from
+                String subject = message.subject
+                assert subject
+                exchange.in.headers.'Subject' = subject
+                LOG.debug("Preparing to send email: ${from} -> ${recipients} : ${subject}")
             }
         }
     }
