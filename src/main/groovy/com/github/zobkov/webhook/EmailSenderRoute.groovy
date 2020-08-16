@@ -16,10 +16,10 @@ import javax.mail.internet.MimeMessage
 /**
  * A route that sends emails.
  *
- * Expects a {@link List} of {@link MimeMessage} as a body.
+ * Expects a {@link List} of {@link MimeMessage} or just {@link MimeMessage} as a body.
  * Each {@link MimeMessage} must be set with: from, subject and content.
  *
- * Each {@link MimeMessage} will be sent as a single email.
+ * Each {@link MimeMessage} will be sent as a single email, one by one in one thread.
   */
 @CompileStatic
 @Component
