@@ -1,6 +1,7 @@
 = GitHub events emailer
 
 image:https://travis-ci.com/AlexanderZobkov/github-events-emailer.svg?branch=master["Build Status", link="https://travis-ci.com/AlexanderZobkov/github-events-emailer"]
+image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
 
 == Build
 
