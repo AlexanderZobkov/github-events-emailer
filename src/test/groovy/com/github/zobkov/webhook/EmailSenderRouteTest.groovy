@@ -71,7 +71,7 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
 
     @DirtiesContext
     @Test
-    void testListEmailsMultiplel() throws Exception {
+    void testListEmailsMultiple() throws Exception {
         resultEndpoint.expectedBodiesReceived((1..3).collect { 'commit_' + it })
         template.sendBody((1..3).collect { buildMimeMessage('commit_' + it) })
         resultEndpoint.assertIsSatisfied();
