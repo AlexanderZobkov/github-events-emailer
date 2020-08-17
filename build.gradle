@@ -30,7 +30,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.apache.camel.springboot:camel-spring-boot-dependencies:3.4.2"
+        mavenBom "org.apache.camel.springboot:camel-spring-boot-dependencies:3.4.3"
     }
 }
 
