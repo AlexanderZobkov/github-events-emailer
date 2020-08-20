@@ -39,15 +39,18 @@ class GHPushToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Pu
         builder << "URL: ${commit.url}\n"
         builder << "SHA: ${sha}\n"
 
-        GHCommit.ShortInfo shortInfo = event.repository
+        GHCommit ghCommit = event.repository
                 .getCommit(sha)
-                .commitShortInfo
+
+        GHCommit.ShortInfo shortInfo = ghCommit.commitShortInfo
         GitUser author = shortInfo.author
         builder << "Author: ${[author.name, author.email].join(' / ')}\n"
         builder << "AuthorDate: ${shortInfo.authoredDate}\n"
         GitUser committer = shortInfo.committer
         builder << "Commit: ${[committer.name, committer.email].join(' / ')}\n"
         builder << "CommitDate: ${shortInfo.commitDate}\n"
+
+        builder << "Parent commits: ${ghCommit.parentSHA1s.join(', ')}\n"
 
         builder << "Message: ${shortInfo.message}\n"
 
