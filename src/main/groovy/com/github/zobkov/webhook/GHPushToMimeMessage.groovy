@@ -65,10 +65,6 @@ class GHPushToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Pu
         builder << '---\n'
         builder << commitRetriever.getCommit(event.repository, sha) + '\n'
 
-        builder << '---\n'
-        ['X-GitHub-Delivery'].each { String header ->
-            builder << "${header}: ${context.get(header, 'is absent')} + \n"
-        }
         return builder.toString()
     }
 

@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage
 /**
  * Abstract translator with base methods to translate {@link GHEventPayload} events to {@link MimeMessage}
  *
- * @param < E > Specific type of {@link GHEventPayload} event.
+ * @param < E >   Specific type of {@link GHEventPayload} event.
  */
 @CompileStatic
 abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements Expression {
@@ -25,7 +25,7 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
             new MimeMessage((Session) null).tap {
                 from = InternetAddress.parse(from(event, context)).first()
                 subject = subject(event, context)
-                text = body(event, context)
+                text = body(event, context) + hookDebugInfo(event, context)
             }
         }
         return type.cast(result)
@@ -83,4 +83,21 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
      * @throws IOException  If error occurred while translating the field.
      */
     protected abstract String subject(E event, Map<String, ?> context) throws IOException
+
+    /**
+     * Returns webhook debug information that is appended to the email body.
+     *
+     * @param event One of {@link GHEventPayload} events.
+     * @param context Translation context.
+     * @return webhook debug information.
+     */
+    @SuppressWarnings('UnusedMethodParameter')
+    protected String hookDebugInfo(E event, Map<String, ?> context) {
+        StringBuilder builder = new StringBuilder()
+        builder << '---\n'
+        ['X-GitHub-Delivery'].each { String header ->
+            builder << "${header}: ${context.get(header, 'is absent')}\n"
+        }
+        return builder.toString()
+    }
 }

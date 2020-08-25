@@ -53,11 +53,6 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
             builder << "Message: ${commit.commitShortInfo.message}\n"
         }
 
-        builder << '---\n'
-        ['X-GitHub-Delivery'].each { String header ->
-            builder << "${header}: ${context.get(header, 'is absent')} + \n"
-        }
-
         return builder.toString()
     }
 
