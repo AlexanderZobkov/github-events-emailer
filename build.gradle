@@ -6,7 +6,7 @@ plugins {
     id 'com.google.cloud.tools.jib' version '2.5.0'
 }
 
-group 'com.github.zobkov'
+group 'com.github.alexander-zobkov'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
