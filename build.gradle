@@ -54,7 +54,7 @@ quality {
 }
 
 bootJar {
-    classifier = 'boot'
+    archiveClassifier = 'boot'
     manifest {
         attributes 'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
     }
