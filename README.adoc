@@ -2,6 +2,8 @@
 
 image:https://travis-ci.com/AlexanderZobkov/github-events-emailer.svg?branch=master["Build Status", link="https://travis-ci.com/AlexanderZobkov/github-events-emailer"]
 image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
+image:https://api.bintray.com/packages/alexander-zobkov/maven/github-events-emailer/images/download.svg[link="https://bintray.com/alexander-zobkov/maven/github-events-emailer/_latestVersion"]
+image:https://img.shields.io/docker/v/zobkov/github-events-emailer?label=docker%20hub[Docker Image Version (latest by date)]
 
 == Build
 
