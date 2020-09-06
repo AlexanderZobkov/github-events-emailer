@@ -17,7 +17,11 @@ before_deploy:
   - docker image ls
   - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
 deploy:
-  provider: script
-  script: docker push "${IMAGE_NAME}:latest"
-  on:
-    branch: master
+  - provider: script
+    script: docker push "${IMAGE_NAME}:latest"
+    on:
+      branch: master
+  - provider: script
+    script: ./gradlew artifactoryPublish -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$TRAVIS_BUILD_NUMBER
+    on:
+      branch: master
