@@ -74,7 +74,7 @@ class GHPushToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Pu
         GHEventPayload.Push.PushCommit commit = context['commit'] as GHEventPayload.Push.PushCommit
         return 'New commit in repository ' +
                 "${event.repository.fullName}/${event.ref - 'refs/heads/' - 'refs/tags/'} " +
-                "- ${commit.sha.take(7)} ${commit.message.readLines().first().take(50)}"
+                "- ${commit.sha.take(7)} ${commit.message.readLines().first()}"
     }
 
     @Override
