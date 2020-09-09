@@ -25,7 +25,7 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
             new MimeMessage((Session) null).tap {
                 from = InternetAddress.parse(from(event, context)).first()
                 subject = subject(event, context)
-                text = body(event, context) + hookDebugInfo(event, context)
+                setText(body(event, context) + hookDebugInfo(event, context), null)
             }
         }
         return type.cast(result)
