@@ -50,7 +50,7 @@ class GHPushToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Pu
         builder << "Commit: ${[committer.name, committer.email].join(' / ')}\n"
         builder << "CommitDate: ${shortInfo.commitDate}\n"
 
-        builder << "Parent commits: ${ghCommit.parentSHA1s.join(', ')}\n"
+        builder << "Parent commit(s): ${ghCommit.parentSHA1s.join(', ')}\n"
 
         builder << "Message: ${shortInfo.message}\n"
 
