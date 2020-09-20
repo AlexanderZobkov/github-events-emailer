@@ -1,7 +1,9 @@
 package com.github.zobkov.webhook
 
 import groovy.transform.CompileStatic
+import org.apache.camel.Expression
 import org.kohsuke.github.GHCommitDiffRetriever
+import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
 import org.kohsuke.github.GitHubBuilder
 import org.springframework.beans.factory.annotation.Value
@@ -37,6 +39,18 @@ class AppConfig {
     @Bean
     GHCommitDiffRetriever commitRetriever() {
         return new GHCommitDiffRetriever()
+    }
+
+    @Value('${push_event.commits.compact.maxCommitAge}')
+    int maxCommitAge
+
+    @Bean
+    Map<Class, ? extends Expression> translationMap() {
+        return [
+                (GHEventPayload.Push)  : new GHPushToMimeMessage(commitDiffRetriever: commitRetriever(),
+                        maxCommitAge: maxCommitAge),
+                (GHEventPayload.Create): new GHCreateToMimeMessage(),
+        ]
     }
 
 }

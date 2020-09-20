@@ -51,7 +51,7 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
      */
     @SuppressWarnings('UnusedMethodParameter')
     protected Map<String, ?> buildContext(Exchange exchange, E event, Object thing) {
-        return [:].tap { putAll(exchange.in.headers) }
+        return [:].putAll(exchange.in.headers)
     }
 
     /**

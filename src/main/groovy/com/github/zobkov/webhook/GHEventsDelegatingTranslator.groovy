@@ -3,8 +3,8 @@ package com.github.zobkov.webhook
 import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
-import org.kohsuke.github.GHCommitDiffRetriever
 import org.kohsuke.github.GHEventPayload
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -16,20 +16,16 @@ import org.springframework.stereotype.Component
 class GHEventsDelegatingTranslator implements Expression {
 
     /**
-     * Map that contains translators for github events.
+     * App config.
      */
-    @SuppressWarnings('UnnecessaryCast')
-    Map<Class, ? extends Expression> translationMap =
-            [
-                    (GHEventPayload.Push)  : new GHPushToMimeMessage(commitRetriever: new GHCommitDiffRetriever()),
-                    (GHEventPayload.Create): new GHCreateToMimeMessage(),
-            ] as Map<Class, ? extends Expression>
+    @Autowired
+    AppConfig appConfig
 
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
         GHEventPayload payload = exchange.in.getMandatoryBody(GHEventPayload)
-        Expression expression = translationMap[payload.class as Class]
-        return expression.evaluate(exchange, type)
+        Expression delegate = appConfig.translationMap()[payload.class as Class]
+        return delegate.evaluate(exchange, type)
     }
 
 }
