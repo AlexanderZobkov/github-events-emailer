@@ -5,12 +5,12 @@ import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.lang.NonNull
 import org.springframework.stereotype.Component
 
+import javax.mail.Message
+import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 /**
@@ -24,8 +24,6 @@ import javax.mail.internet.MimeMessage
 @CompileStatic
 @Component
 class EmailSenderRoute extends RouteBuilder {
-
-    private static final Log LOG = LogFactory.getLog(EmailSenderRoute)
 
     @Value('${smtp.debug}')
     String smtpDebug
@@ -67,16 +65,7 @@ class EmailSenderRoute extends RouteBuilder {
         return new Processor() {
             void process(Exchange exchange) throws Exception {
                 MimeMessage message = exchange.in.getMandatoryBody(MimeMessage)
-                assert message.content
-                exchange.in.body = message.content as String
-                exchange.in.headers.'To' = recipients
-                assert message.from
-                String from = message.from.first()
-                exchange.in.headers.'From' = from
-                String subject = message.subject
-                assert subject
-                exchange.in.headers.'Subject' = subject
-                LOG.debug("Preparing to send email: ${from} -> ${recipients} : ${subject}")
+                message.setRecipient(Message.RecipientType.TO, InternetAddress.parse(recipients).first())
             }
         }
     }
