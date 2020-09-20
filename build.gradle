@@ -42,10 +42,17 @@ dependencies {
     implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
     implementation 'org.apache.camel:camel-jetty'
     implementation 'org.apache.camel:camel-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13'
     testImplementation 'org.apache.camel:camel-test-spring'
     testImplementation 'org.apache.camel:camel-spring-javaconfig'
+}
+
+configurations {
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 }
 
 tasks.build.dependsOn tasks.jibDockerBuild
