@@ -42,11 +42,11 @@ class GHPushToMimeMessage implements Expression {
     }
 
     private Exchange buildNewExcange(Exchange exchange, GHEventPayload.Push event, List<GHCommit> commmits) {
-        return exchange.copy().tap {
-            message.body = new ExpandedGHPushEvent(
-                            event  : event,
-                            commits: commmits)
-        }
+        Exchange answer = exchange.copy()
+        answer.message.body = new ExpandedGHPushEvent(
+                event: event,
+                commits: commmits)
+        return answer
     }
 
     private List<GHCommit> convertToGHCommits(GHRepository repository, List<PushCommit> pushCommits) {
