@@ -1,7 +1,9 @@
 package com.github.zobkov.webhook
 
 import groovy.transform.CompileStatic
+import org.apache.camel.CamelContext
 import org.apache.camel.Expression
+import org.apache.camel.spring.boot.CamelContextConfiguration
 import org.kohsuke.github.GHCommitDiffRetriever
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
@@ -53,4 +55,18 @@ class AppConfig {
         ]
     }
 
+    @Bean
+    CamelContextConfiguration contextConfiguration() {
+        return new CamelContextConfiguration() {
+            @Override
+            void beforeApplicationStart(CamelContext context) {
+                context.logExhaustedMessageBody = true
+            }
+
+            @Override
+            void afterApplicationStart(CamelContext camelContext) {
+                // Do nothing
+            }
+        }
+    }
 }
