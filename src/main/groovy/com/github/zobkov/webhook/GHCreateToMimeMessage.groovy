@@ -1,6 +1,8 @@
 package com.github.zobkov.webhook
 
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log4j2
+import org.apache.camel.Exchange
 import org.kohsuke.github.GHCommit
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GHRef
@@ -15,11 +17,11 @@ import org.kohsuke.github.GitUser
 */
 @CompileStatic
 @SuppressWarnings('DuplicateStringLiteral')
+@Log4j2
 class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Create> {
 
     @Override
     protected String from(GHEventPayload.Create event, Map<String, ?> context) {
-        checkRefType(event)
         GHRef tagRef = event.repository.getRefs('tag')
                 .find { GHRef tag -> tag.ref - 'refs/heads/' - 'refs/tags/' == event.ref }
         try {
@@ -33,8 +35,6 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
 
     @Override
     protected String body(GHEventPayload.Create event, Map<String, ?> context) {
-        checkRefType(event)
-
         String ref = event.ref
         StringBuilder builder = new StringBuilder()
         GHRef tagRef = event.repository.getRefs('tag')
@@ -61,10 +61,14 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
         return "New ${event.refType} in repository ${event.repository.fullName} - ${event.ref}"
     }
 
-    private void checkRefType(GHEventPayload.Create event) {
+    @Override
+    protected List<?> toList(Exchange exchange, GHEventPayload . Create event) {
         String refType = event.refType
         if (refType != 'tag') {
-            throw new IOException("Not supported ref type: ${refType}")
+            log.warn("Not supported ref type: ${refType}, ignoring ${event}")
+            return []
         }
+        return [event]
     }
+
 }

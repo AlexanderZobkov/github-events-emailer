@@ -20,7 +20,7 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
         GHEventPayload event = exchange.in.getMandatoryBody(GHEventPayload)
-        List result = toList(event).collect { Object thing ->
+        List result = toList(exchange, event).collect { Object thing ->
             Map<String, ?> context = buildContext(exchange, event, thing)
             new MimeMessage((Session) null).tap {
                 from = InternetAddress.parse(from(event, context)).first()
@@ -34,10 +34,12 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
     /**
      * Converts {@link GHEventPayload} event into a list.
      *
+     * @param exchange the exchange.
      * @param event One of {@link GHEventPayload} events.
      * @return a list that contains elements representing the event or the same event.
      */
-    protected List<?> toList(E event) {
+    @SuppressWarnings('UnusedMethodParameter')
+    protected List<?> toList(Exchange exchange, E event) {
         return [event]
     }
 
