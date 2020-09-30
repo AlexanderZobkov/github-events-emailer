@@ -38,7 +38,7 @@ dependencyManagement {
 
 dependencies {
     implementation 'org.kohsuke:github-api:1.116'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.6'
     implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
     implementation 'org.apache.camel:camel-jetty'
     implementation 'org.apache.camel:camel-mail'
