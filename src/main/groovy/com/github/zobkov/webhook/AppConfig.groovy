@@ -49,9 +49,12 @@ class AppConfig {
     @Bean
     Map<Class, ? extends Expression> translationMap() {
         return [
-                (GHEventPayload.Push)  : new GHPushToMimeMessage(commitDiffRetriever: commitRetriever(),
-                        maxCommitAge: maxCommitAge),
-                (GHEventPayload.Create): new GHCreateToMimeMessage(),
+                (GHEventPayload.Push)  : new DebugInfoAppender(delegate:
+                        new GHPushToMimeMessage(
+                                commitDiffRetriever: commitRetriever(),
+                                maxCommitAge: maxCommitAge)),
+                (GHEventPayload.Create): new DebugInfoAppender(delegate:
+                        new GHCreateToMimeMessage()),
         ]
     }
 

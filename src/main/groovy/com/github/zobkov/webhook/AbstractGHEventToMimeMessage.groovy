@@ -20,12 +20,12 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
         GHEventPayload event = exchange.in.getMandatoryBody(GHEventPayload)
-        List result = toList(exchange, event).collect { Object thing ->
+        List<MimeMessage> result = toList(exchange, event).collect { Object thing ->
             Map<String, ?> context = buildContext(exchange, event, thing)
             new MimeMessage((Session) null).tap {
                 from = InternetAddress.parse(from(event, context)).first()
                 subject = subject(event, context)
-                setText(body(event, context) + hookDebugInfo(event, context), null)
+                setText(body(event, context), null)
             }
         }
         return type.cast(result)
@@ -86,20 +86,4 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
      */
     protected abstract String subject(E event, Map<String, ?> context) throws IOException
 
-    /**
-     * Returns webhook debug information that is appended to the email body.
-     *
-     * @param event One of {@link GHEventPayload} events.
-     * @param context Translation context.
-     * @return webhook debug information.
-     */
-    @SuppressWarnings('UnusedMethodParameter')
-    protected String hookDebugInfo(E event, Map<String, ?> context) {
-        StringBuilder builder = new StringBuilder()
-        builder << '---\n'
-        ['X-GitHub-Delivery'].each { String header ->
-            builder << "${header}: ${context.get(header, 'is absent')}\n"
-        }
-        return builder.toString()
-    }
 }

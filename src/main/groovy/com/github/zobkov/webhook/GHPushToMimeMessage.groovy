@@ -159,7 +159,6 @@ class GHPushToMimeMessage implements Expression {
         private String body(GHEventPayload.Push event, List<GHCommit> commits) {
             StringBuilder builder = new StringBuilder()
             builder << '''\
-<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <body>
 '''
