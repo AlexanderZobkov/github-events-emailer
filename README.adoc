@@ -33,3 +33,7 @@ The application supports webhooks that are setup in the following way:
 however only the following events will result in an email:
 - https://developer.github.com/webhooks/event-payloads/#push[Pushes]
 - https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation]
+
+=== Settings
+
+link:src/main/resources/application.properties[See the configuration file for details].
