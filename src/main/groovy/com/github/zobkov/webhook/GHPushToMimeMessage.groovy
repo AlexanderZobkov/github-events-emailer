@@ -1,6 +1,8 @@
 package com.github.zobkov.webhook
 
 import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
+import groovy.xml.MarkupBuilder
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.kohsuke.github.GHCommit
@@ -156,27 +158,28 @@ class GHPushToMimeMessage implements Expression {
         }
 
         @SuppressWarnings('UnusedPrivateMethodParameter')
+        @SuppressWarnings('ExplicitCallToDivMethod') // div is html element here
+        @CompileStatic(TypeCheckingMode.SKIP)
         private String body(GHEventPayload.Push event, List<GHCommit> commits) {
-            StringBuilder builder = new StringBuilder()
-            builder << '''\
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<body>
-'''
-            commits.reverse().each { ghCommit ->
-                String sha = ghCommit.SHA1
-                GHCommit.ShortInfo info = ghCommit.commitShortInfo
-                Date commitDate = ghCommit.commitDate
-                long ago = Duration.between(commitDate.toInstant(), ZonedDateTime.now()).toDays()
-                builder << "<a href='${ghCommit.htmlUrl}'>${sha.take(7)}</a> - ${info.message.readLines().first()} "
-                builder << "<b>(${ago} day(s) ago)</b> &lt;${info.committer.name}&gt;"
-                builder << '<br/>'
-            }
-
-            builder << '''\
-</body>
-</html>
-'''
-            return builder.toString()
+            StringWriter reply = new StringWriter()
+            MarkupBuilder builder = new MarkupBuilder(reply)
+                builder.html {
+                    builder.body {
+                        commits.reverse().each { ghCommit ->
+                            String sha = ghCommit.SHA1
+                            GHCommit.ShortInfo info = ghCommit.commitShortInfo
+                            Date commitDate = ghCommit.commitDate
+                            long ago = Duration.between(commitDate.toInstant(), ZonedDateTime.now()).toDays()
+                            builder.div {
+                                builder.a(href: "${ghCommit.htmlUrl}", "${sha.take(7)}")
+                                mkp.yield " - ${info.message.readLines().first()}"
+                                builder.b("(${ago} day(s) ago)")
+                                mkp.yield "<${info.committer.name}>"
+                            }
+                        }
+                    }
+                }
+            return reply.toString()
         }
 
         @SuppressWarnings('UnusedPrivateMethodParameter')
