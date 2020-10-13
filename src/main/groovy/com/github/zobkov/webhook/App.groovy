@@ -11,6 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 class App {
 
+    static {
+        // Redirects JUL to Log4J
+        System.properties.setProperty('java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager')
+    }
+
     /**
      * A main method to start this application.
      */
