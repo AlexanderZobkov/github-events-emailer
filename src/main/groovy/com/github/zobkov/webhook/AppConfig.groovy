@@ -3,6 +3,8 @@ package com.github.zobkov.webhook
 import groovy.transform.CompileStatic
 import org.apache.camel.CamelContext
 import org.apache.camel.Expression
+import org.apache.camel.component.micrometer.messagehistory.MicrometerMessageHistoryFactory
+import org.apache.camel.component.micrometer.routepolicy.MicrometerRoutePolicyFactory
 import org.apache.camel.spring.boot.CamelContextConfiguration
 import org.kohsuke.github.GHCommitDiffRetriever
 import org.kohsuke.github.GHEventPayload
@@ -64,6 +66,8 @@ class AppConfig {
             @Override
             void beforeApplicationStart(CamelContext context) {
                 context.logExhaustedMessageBody = true
+                context.addRoutePolicyFactory(new MicrometerRoutePolicyFactory())
+                context.messageHistoryFactory = new MicrometerMessageHistoryFactory()
             }
 
             @Override

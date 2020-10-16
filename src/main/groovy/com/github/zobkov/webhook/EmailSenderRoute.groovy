@@ -6,7 +6,7 @@ import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.lang.NonNull
+import javax.annotation.Nonnull
 import org.springframework.stereotype.Component
 
 import javax.mail.Message
@@ -28,11 +28,11 @@ class EmailSenderRoute extends RouteBuilder {
     @Value('${smtp.debug}')
     String smtpDebug
 
-    @NonNull
+    @Nonnull
     @Value('${smtp.recipients}')
     String recipients
 
-    @NonNull
+    @Nonnull
     @Value('${smtp.server.host}')
     String smtpServerHost
 
@@ -54,11 +54,12 @@ class EmailSenderRoute extends RouteBuilder {
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
                 .end()
-                .split(body())
-                .removeHeaders('*')
-                .process(prepareEmail())
+                .split(body()).id('split-emails-list')
+                .removeHeaders('*').id('remove-headers-sending-email')
+                .process(prepareEmail()).id('prepare-email')
                 .to("smtp://admin@${smtpServerHost}:${smtpServerPort}?" +
-                        "password=secret&debugMode=${smtpDebug}&connectionTimeout=${smtpServerConnectionTimeout}")
+                        "password=secret&debugMode=${smtpDebug}&" +
+                        "connectionTimeout=${smtpServerConnectionTimeout}").id('send-email')
     }
 
     Processor prepareEmail() {

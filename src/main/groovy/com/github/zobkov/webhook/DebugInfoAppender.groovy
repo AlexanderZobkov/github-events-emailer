@@ -6,8 +6,7 @@ import groovy.xml.XmlParser
 import groovy.xml.XmlUtil
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
-import org.springframework.lang.NonNull
-
+import javax.annotation.Nonnull
 import javax.mail.internet.MimeMessage
 
 /**
@@ -19,7 +18,7 @@ import javax.mail.internet.MimeMessage
 @CompileStatic
 class DebugInfoAppender implements Expression {
 
-    @NonNull
+    @Nonnull
     Expression delegate
 
     @Override

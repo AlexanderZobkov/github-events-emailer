@@ -21,8 +21,8 @@ class GHEventsTranslatorRoute extends RouteBuilder {
     @Override
     void configure() throws Exception {
         from('seda:github-events').id('translator')
-                .transform(translator)
-                .to('seda:email-sender')
+                .transform(translator).id('translate-github-events')
+                .to('seda:email-sender').id('to-email-sender')
     }
 
 }

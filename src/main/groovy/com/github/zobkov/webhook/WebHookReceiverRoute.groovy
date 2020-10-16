@@ -34,15 +34,15 @@ class WebHookReceiverRoute extends RouteBuilder {
     void configure() throws Exception {
         from("jetty:http://${webhookListenAddress}:${webhookListenPort}?matchOnUriPrefix=true")
                 .routeId('github-webhook')
-                .process(unmarshallEvent())
-                .choice()
+                .process(unmarshallEvent()).id('unmarshall-event')
+                .choice().id('events-filter')
                     .when().expression(shouldPassEvent())
-                        .to(ExchangePattern.InOnly, 'seda:github-events')
+                        .to(ExchangePattern.InOnly, 'seda:github-events').id('to-github-events')
                     .otherwise()
-                        .log(LoggingLevel.WARN, 'Ignoring event: ${header[X-GitHub-Event]}')
+                        .log(LoggingLevel.WARN, 'Ignoring event: ${header[X-GitHub-Event]}').id('log-ignored-event')
                 .end()
-        .removeHeaders('*')
-        .setBody().constant('')
+        .removeHeaders('*').id('remove-headers-replying-webhook')
+        .setBody().constant('').id('set-webhook-reply')
     }
 
     Processor unmarshallEvent() {
