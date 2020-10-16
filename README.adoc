@@ -37,3 +37,22 @@ however only the following events will result in an email:
 === Settings
 
 link:src/main/resources/application.properties[See the configuration file for details].
+
+=== Run
+
+==== Standalone
+
+. Create a copy of link:src/main/resources/application.properties[application.properties] with adjusted settings.
+
+. Place the file where Spring Boot link:https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files[can find it].
+
+. Run the jar file as the following:
++
+```shell
+nohup java -jar github-events-emailer-xxxx-boot.jar &
+```
+
+==== Docker
+
+TBD
+
