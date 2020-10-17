@@ -34,7 +34,7 @@ however only the following events will result in an email:
 - https://developer.github.com/webhooks/event-payloads/#push[Pushes]
 - https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation]
 
-=== Settings
+=== Configuration
 
 link:src/main/resources/application.properties[See the configuration file for details].
 
@@ -42,17 +42,26 @@ link:src/main/resources/application.properties[See the configuration file for de
 
 ==== Standalone
 
-. Create a copy of link:src/main/resources/application.properties[application.properties] with adjusted settings.
+When you run in the standalone mode, the configuration files are loaded from the jar file.
+To override configuration parameters, just place a copy of link:src/main/resources/application.properties[application.properties]
+the file where Spring Boot link:https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files[can find it].
+Run the jar file as the following:
 
-. Place the file where Spring Boot link:https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files[can find it].
-
-. Run the jar file as the following:
-+
 ```shell
 nohup java -jar github-events-emailer-xxxx-boot.jar &
 ```
 
 ==== Docker
 
-TBD
+When you run in Docker, the configuration files are loaded from `/app/resources`.
+To use custom configuration files, you bind-mount the files over the configuration files in the image:
 
+```shell
+docker run -p 8080:8080 -v full_path_to/application.properties:/app/resources/application.properties docker.io/zobkov/github-events-emailer
+```
+
+Alternatively you can set individual configuration parameters using Docker environment variables:
+
+```shell
+docker run -p 8080:8080 -e "github.oauthToken=token" -e "..." docker.io/zobkov/github-events-emailer
+```
