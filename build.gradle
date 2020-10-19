@@ -57,11 +57,6 @@ configurations {
 
 tasks.build.dependsOn tasks.jibDockerBuild
 
-quality {
-    // To workaround: java.lang.NoClassDefFoundError: Lgroovy/text/TemplateEngine;
-    codenarcVersion = '1.6'
-}
-
 task sourceJar(type: Jar) {
     classifier 'sources'
     from sourceSets.main.allSource
