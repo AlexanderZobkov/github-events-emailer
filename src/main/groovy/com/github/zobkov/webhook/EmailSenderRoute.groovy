@@ -45,7 +45,7 @@ class EmailSenderRoute extends RouteBuilder {
     @Value('${smtp.server.redelivery.attempts}')
     int smtpServerRedeliveryAttempts
 
-    @Value('${smtp.server.redelivery.timeout}')
+    @Value('${smtp.server.redelivery.delay}')
     int smtpServerRedeliveryDelay
 
     void configure() throws Exception {
