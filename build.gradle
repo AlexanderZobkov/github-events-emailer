@@ -50,6 +50,7 @@ dependencies {
     implementation 'org.apache.camel:camel-mail'
     implementation 'org.apache.camel:camel-micrometer'
     implementation 'org.apache.camel:camel-management'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.apache.camel:camel-test-spring'
