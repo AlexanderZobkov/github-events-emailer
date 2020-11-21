@@ -31,3 +31,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew clean build
+
+      - name: Publish to oss.jfrog.org
+        run: artifactoryPublish -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$BUILD_NUMBER
