@@ -14,6 +14,13 @@ sourceCompatibility = 1.8
 
 bootBuildImage {
     imageName = "docker.io/zobkov/${project.name}"
+    docker {
+        publishRegistry {
+            username = System.getenv('DOCKER_USER')?:'DOCKER_USER is not set'
+            password = System.getenv('DOCKER_PASS')?:'DOCKER_PASS is not set'
+            url = "https://index.docker.io/v2/"
+        }
+    }
 }
 
 repositories {
@@ -53,8 +60,6 @@ configurations {
     }
 }
 
-tasks.build.dependsOn tasks.bootBuildImage
-
 task sourceJar(type: Jar) {
     classifier 'sources'
     from sourceSets.main.allSource
@@ -93,8 +98,8 @@ artifactory {
     publish {
         repository {
             repoKey = 'oss-snapshot-local'
-            username = System.getProperty('bintray.user')
-            password = System.getProperty('bintray.key')
+            username = System.getenv('OJO_USER')
+            password = System.getenv('OJO_KEY')
         }
         defaults {
             publications('maven')
@@ -102,5 +107,5 @@ artifactory {
             publishPom = true
         }
     }
-    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
+    clientConfig.info.setBuildNumber(System.getenv('BUILD_NUMBER'))
 }
