@@ -1,4 +1,4 @@
-package com.github.zobkov.webhook
+package com.github.gee
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Log4j2

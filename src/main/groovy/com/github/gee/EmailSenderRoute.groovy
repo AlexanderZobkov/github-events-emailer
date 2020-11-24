@@ -1,4 +1,4 @@
-package com.github.zobkov.webhook
+package com.github.gee
 
 import com.sun.mail.util.MailConnectException
 import groovy.transform.CompileStatic

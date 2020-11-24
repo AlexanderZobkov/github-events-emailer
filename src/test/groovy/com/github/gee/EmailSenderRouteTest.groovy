@@ -1,6 +1,6 @@
-package com.github.zobkov.webhook
+package com.github.gee
 
-import com.github.zobkov.webhook.EmailSenderRoute
+
 import org.apache.camel.EndpointInject
 import org.apache.camel.Produce
 import org.apache.camel.ProducerTemplate

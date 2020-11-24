@@ -1,4 +1,4 @@
-package com.github.zobkov.webhook
+package com.github.gee
 
 import groovy.transform.CompileStatic
 import org.apache.camel.CamelContext
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Configures Webhook app.
+ * Configures the app.
  */
 @CompileStatic
 @Configuration

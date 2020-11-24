@@ -1,11 +1,11 @@
-package com.github.zobkov.webhook
+package com.github.gee
 
 import groovy.transform.CompileStatic
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 /**
-*  Webhook app main class.
+*  The app main class.
 */
 @CompileStatic
 @SpringBootApplication
