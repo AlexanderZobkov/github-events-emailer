@@ -1,12 +1,11 @@
 package com.github.gee
 
-
 import org.apache.camel.EndpointInject
 import org.apache.camel.Produce
 import org.apache.camel.ProducerTemplate
+import org.apache.camel.builder.AdviceWith
 import org.apache.camel.builder.AdviceWithRouteBuilder
 import org.apache.camel.component.mock.MockEndpoint
-import org.apache.camel.reifier.RouteReifier
 import org.apache.camel.spring.SpringCamelContext
 import org.apache.camel.spring.javaconfig.CamelConfiguration
 import org.apache.camel.test.spring.CamelSpringBootRunner
@@ -43,7 +42,7 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
 
     @Before
     void setup() {
-        RouteReifier.adviceWith(camelContext.getRouteDefinition("email-sender"), camelContext, new AdviceWithRouteBuilder() {
+        AdviceWith.adviceWith(camelContext.getRouteDefinition("email-sender"), camelContext, new AdviceWithRouteBuilder() {
             @Override
             void configure() throws Exception {
                 weaveByToUri('smtp.*').replace().to("mock:result")
