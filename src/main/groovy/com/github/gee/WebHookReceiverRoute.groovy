@@ -3,7 +3,7 @@ package com.github.gee
 import groovy.transform.CompileStatic
 import org.apache.camel.ExchangePattern
 import org.apache.camel.Message
-import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.builder.endpoint.EndpointRouteBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 @CompileStatic
 @Component
 @SuppressWarnings('DuplicateStringLiteral')
-class WebHookReceiverRoute extends RouteBuilder {
+class WebHookReceiverRoute extends EndpointRouteBuilder {
 
     @Value('${webhook.listen.address}')
     String webhookListenAddress
@@ -26,11 +26,12 @@ class WebHookReceiverRoute extends RouteBuilder {
 
     @Override
     void configure() throws Exception {
-        from("jetty:http://${webhookListenAddress}:${webhookListenPort}?matchOnUriPrefix=true")
+        from(jetty("http://${webhookListenAddress}:${webhookListenPort}").matchOnUriPrefix(true))
                 .routeId('github-webhook')
                 .choice().id('events-filter')
                     .when().message(shouldPass)
-                        .to(ExchangePattern.InOnly, 'seda:github-events').id('to-github-events')
+                        .to(ExchangePattern.InOnly,
+                                seda('github-events').blockWhenFull(true)).id('to-github-events')
                     .otherwise()
                         .process().message(logIgnoredEvent).id('log-ignored-event')
                 .end()

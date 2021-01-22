@@ -4,7 +4,7 @@ import com.sun.mail.util.MailConnectException
 import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
-import org.apache.camel.builder.RouteBuilder
+import org.apache.camel.builder.endpoint.EndpointRouteBuilder
 import org.springframework.beans.factory.annotation.Value
 import javax.annotation.Nonnull
 import org.springframework.stereotype.Component
@@ -23,10 +23,11 @@ import javax.mail.internet.MimeMessage
   */
 @CompileStatic
 @Component
-class EmailSenderRoute extends RouteBuilder {
+@SuppressWarnings('DuplicateStringLiteral')
+class EmailSenderRoute extends EndpointRouteBuilder {
 
     @Value('${smtp.debug}')
-    String smtpDebug
+    boolean smtpDebug
 
     @Nonnull
     @Value('${smtp.recipients}')
@@ -49,7 +50,7 @@ class EmailSenderRoute extends RouteBuilder {
     int smtpServerRedeliveryDelay
 
     void configure() throws Exception {
-        from('seda:email-sender').id('email-sender')
+        from(seda('email-sender').concurrentConsumers(1)).id('email-sender')
                 .onException(MailConnectException)
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
@@ -57,9 +58,11 @@ class EmailSenderRoute extends RouteBuilder {
                 .split(body()).id('split-emails-list')
                 .removeHeaders('*').id('remove-headers-sending-email')
                 .process(prepareEmail()).id('prepare-email')
-                .to("smtp://admin@${smtpServerHost}:${smtpServerPort}?" +
-                        "password=secret&debugMode=${smtpDebug}&" +
-                        "connectionTimeout=${smtpServerConnectionTimeout}").id('send-email')
+                .to(smtp("${smtpServerHost}:${smtpServerPort}")
+                        .username('admin').password('secret')
+                        .advanced()
+                            .debugMode(smtpDebug)
+                            .connectionTimeout(smtpServerConnectionTimeout)).id('send-email')
     }
 
     Processor prepareEmail() {
