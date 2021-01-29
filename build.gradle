@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "ru.vyarus.quality" version "4.4.0"
     id "maven-publish"
-    id "com.jfrog.artifactory" version '4.19.0'
+    id "com.jfrog.artifactory" version '4.20.0'
 }
 
 group 'com.github.alexander-zobkov'
