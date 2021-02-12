@@ -81,8 +81,8 @@
     </rule>
     <rule ref="category/java/design.xml/NcssCount">
         <properties>
-            <property name="methodReportLevel" value="30"/>
-            <property name="classReportLevel" value="300"/>
+            <property name="methodReportLevel" value="40"/>
+            <property name="classReportLevel" value="500"/>
         </properties>
     </rule>
     <rule ref="category/java/design.xml/NPathComplexity">
@@ -106,10 +106,11 @@
 
     <!-- Error prone (https://pmd.github.io/pmd-6.0.1/pmd_rules_java_errorprone.html) -->
     <rule ref="category/java/errorprone.xml">
+        <exclude name="AssignmentInOperand"/>
         <exclude name="AvoidCatchingThrowable"/>
         <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="DataflowAnomalyAnalysis"/>
-        <exclude name="DoNotCallSystemExit"/> <!-- earlier j2ee group-->
+        <exclude name="DoNotTerminateVM"/> <!-- earlier j2ee group; before 6.29 DoNotCallSystemExit-->
         <exclude name="EmptyFinalizer"/>
         <exclude name="FinalizeOnlyCallsSuperFinalize"/>
         <exclude name="FinalizeDoesNotCallSuperFinalize"/>
@@ -144,13 +145,17 @@
 
     <!-- Error prone (https://pmd.github.io/pmd-6.0.1/pmd_rules_java_multithreading.html) -->
     <rule ref="category/java/multithreading.xml">
+        <exclude name="AvoidUsingVolatile"/>
         <exclude name="DoNotUseThreads"/> <!-- earlier j2ee group-->
         <exclude name="UseConcurrentHashMap"/>
     </rule>
 
 
     <!-- Performance (https://pmd.github.io/pmd-6.0.1/pmd_rules_java_performance.html) -->
-    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/performance.xml">
+        <!-- Mostly annoying because reacts on all instantiations, including unmovable -->
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
 
 
     <!-- Security (no rules) -->

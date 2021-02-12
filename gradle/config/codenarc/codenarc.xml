@@ -19,19 +19,41 @@
         <exclude name="ImplicitClosureParameter"/>
         <exclude name="ImplicitReturnStatement"/>
         <exclude name="NoJavaUtilDate"/>
+        <!-- Will complicate merges -->
+        <exclude name="PublicMethodsBeforeNonPublicMethods"/>
+        <exclude name="StaticMethodsBeforeInstanceMethods"/>
+        <!-- Why would one want require every class to be annotated??? -->
+        <exclude name="CompileStatic"/>
+        <!-- Want to simplify code by omitting return statements where not required -->
+        <exclude name="ImplicitReturnStatement"/>
     </ruleset-ref>
 
     <!-- Design (http://codenarc.sourceforge.net/codenarc-rules-design.html) -->
-    <ruleset-ref path='rulesets/design.xml'/>
+    <ruleset-ref path='rulesets/design.xml'>
+        <rule-config name="Instanceof">
+            <property name="enabled" value="false"/>
+        </rule-config>
+        <!-- It's buggy -->
+        <exclude name="AbstractClassWithoutAbstractMethod"/>
+        <exclude name="AbstractClassWithPublicConstructor"/>
+    </ruleset-ref>
 
     <!-- DRY (Don't Repeat Yourself) (http://codenarc.sourceforge.net/codenarc-rules-dry.html) -->
-    <ruleset-ref path='rulesets/dry.xml'/>
+    <ruleset-ref path='rulesets/dry.xml'>
+        <!-- It is quite stupid to define constants for every xml element. This completely ruins DSL. -->
+        <exclude name="DuplicateStringLiteral"/>
+    </ruleset-ref>
 
     <!-- Enhanced Classpath (http://codenarc.sourceforge.net/codenarc-rules-enhanced.html) -->
     <!--<ruleset-ref path='rulesets/enhanced.xml'/>-->
 
     <!-- Exceptions (http://codenarc.sourceforge.net/codenarc-rules-exceptions.html) -->
-    <ruleset-ref path='rulesets/exceptions.xml'/>
+    <ruleset-ref path='rulesets/exceptions.xml'>
+        <!-- Want to be safe -->
+        <exclude name="CatchException"/>
+        <exclude name="CatchRuntimeException"/>
+        <exclude name="CatchThrowable"/>
+    </ruleset-ref>
 
     <!-- Formatting (http://codenarc.sourceforge.net/codenarc-rules-formatting.html) -->
     <ruleset-ref path='rulesets/formatting.xml'>
@@ -73,7 +95,14 @@
     <!--<ruleset-ref path='rulesets/grails.xml'/>-->
 
     <!-- Groovy-ism (http://codenarc.sourceforge.net/codenarc-rules-groovyism.html) -->
-    <ruleset-ref path='rulesets/groovyism.xml'/>
+    <ruleset-ref path='rulesets/groovyism.xml'>
+        <!-- This makes it more difficult to circumvent certain edge cases of Groovy MOP. -->
+        <exclude name="GetterMethodCouldBeProperty"/>
+        <!-- This doesnt work if multiple params as in safely("checking last poll status", { checker.lastPollFailedReason }) -->
+        <exclude name="ClosureAsLastMethodParameter"/>
+        <!-- New Java time API has plus() and it's much nicer than (a+b).smth -->
+        <exclude name="ExplicitCallToPlusMethod"/>
+    </ruleset-ref>
 
     <!-- Imports (http://codenarc.sourceforge.net/codenarc-rules-imports.html) -->
     <ruleset-ref path='rulesets/imports.xml'>
@@ -117,7 +146,14 @@
 
     <!-- Unnecessary (http://codenarc.sourceforge.net/codenarc-rules-unnecessary.html) -->
     <ruleset-ref path='rulesets/unnecessary.xml'>
+        <!-- Easier to port code and sometimes makes code easier to read -->
         <exclude name="UnnecessaryReturnKeyword"/>
+        <!-- Interferes with Camel Groovy DSL. -->
+        <exclude name="UnnecessarySetter"/>
+        <!-- Interferes with Camel Groovy DSL. -->
+        <exclude name="UnnecessaryGetter"/>
+        <!-- For the sake of IDE completion support. -->
+        <exclude name="UnnecessaryObjectReferences"/>
     </ruleset-ref>
 
     <!-- Unused (http://codenarc.sourceforge.net/codenarc-rules-unused.html) -->
