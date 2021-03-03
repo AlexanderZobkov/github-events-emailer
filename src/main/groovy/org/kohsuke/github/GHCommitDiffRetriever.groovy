@@ -24,7 +24,7 @@ class GHCommitDiffRetriever {
         InputStream diff = requester
                 .withPreview('application/vnd.github.v3.diff')
                 .withUrlPath("/repos/${repo.ownerName}/${repo.name}/commits/${sha1}")
-                .fetchStream()
+                .fetchStream { Requester.copyInputStream(it) }
         return diff.text
     }
 
