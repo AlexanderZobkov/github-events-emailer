@@ -53,6 +53,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.7.1')
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.junit.vintage:junit-vintage-engine"
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
     testImplementation 'org.apache.camel:camel-test-spring'
     testImplementation 'org.apache.camel:camel-spring-javaconfig'
 }

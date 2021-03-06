@@ -27,17 +27,25 @@ class AppConfig {
     @Value('${github.oauthToken}')
     String githubOAuthToken
 
+    @Value('${github.offline:false}')
+    boolean githubOffline
+
     /**
      * Allows access to Github API.
      */
     @Bean
     GitHub github() {
-        GitHub gitHub = new GitHubBuilder()
-                .withEndpoint(githubEndpoint)
-                .withOAuthToken(githubOAuthToken)
-                .build()
-        gitHub.checkApiUrlValidity()
-        return gitHub
+        GitHub answer
+        if (githubOffline) {
+            answer = GitHub.offline()
+        } else {
+            answer = new GitHubBuilder()
+                    .withEndpoint(githubEndpoint)
+                    .withOAuthToken(githubOAuthToken)
+                    .build()
+            answer.checkApiUrlValidity()
+        }
+        return answer
     }
 
     @Bean
