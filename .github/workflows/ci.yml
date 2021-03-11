@@ -20,6 +20,9 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v2
 
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
