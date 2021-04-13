@@ -23,16 +23,32 @@ https://developer.github.com/webhooks/creating/
 The application supports webhooks that are setup in the following way:
 
 * Payload URL
-** It is set with plain HTTP with any path. Secured connection with SSL is not supported yet.
+** It is set with plain HTTP with URL any path. Secured connection with SSL is not supported yet.
 * Content type
 ** It is set to `application/json`. The `application/x-www-form-urlencoded` content type is not supported yet.
 * Secret
-** Could be leaved empty or set with any value. Payloads from github are not validated yet.
+** Could be left empty or set with any value. Payloads from github are not validated yet.
 * Events
-** The application will not crash if receive unexpected events
-however only the following events will result in an email:
-- https://developer.github.com/webhooks/event-payloads/#push[Pushes]
-- https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation]
+** On supported events, see section <<Supported events>>. However, the application will not crash if receive unexpected events.
+
+=== Supported events
+
+* https://developer.github.com/webhooks/event-payloads/#push[Pushes]
++
+A single or multiple (as per number of commits in a push) emails will be sent that contains the following:
++
+** Commit URL at Github
+** Commit author and date
+** Commit message
+** Author and date
+** Whole commit diff including a list of changed files
+
+* https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation] (Only tag creation events are supported)
++
+An email will be sent that contains the following:
++
+** Tagger name
+** Tag name
 
 === Configuration
 
@@ -42,29 +58,26 @@ link:src/main/resources/application.properties[See the configuration file for de
 
 ==== Standalone
 
-When you run in the standalone mode, the configuration files are loaded from the jar file.
-To override configuration parameters, just place a copy of link:src/main/resources/application.properties[application.properties]
-the file where Spring Boot link:https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files[can find it].
 Run the jar file as the following:
 
 ```shell
 nohup java -jar github-events-emailer-<version>-boot.jar &
 ```
 
+When you run in the standalone mode, the configuration files are loaded from the jar file.
+To override configuration parameters, just place a copy of link:src/main/resources/application.properties[application.properties]
+the file where Spring Boot link:https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files[can find it].
+
 ==== Docker
 
-When you run in Docker, the configuration files are loaded from `/app/resources`.
-To use custom configuration files, you bind-mount the files over the configuration files in the image:
-
-```shell
-docker run -p 8080:8080 -v full_path_to/application.properties:/app/resources/application.properties docker.io/zobkov/github-events-emailer
-```
-
-Alternatively you can set individual configuration parameters using Docker environment variables:
+Start a container instance as the following:
 
 ```shell
 docker run -p 8080:8080 -e "github.oauthToken=<token>" -e "..." docker.io/zobkov/github-events-emailer
 ```
+
+You can adjust the configuration of the instance by passing one or more environment variables on the `docker run` command line.
+See the list of available variables in link:src/main/resources/application.properties[application.properties].
 
 === Monitoring
 
