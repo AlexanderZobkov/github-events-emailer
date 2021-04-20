@@ -37,8 +37,7 @@ dependencyManagement {
 
 dependencies {
     implementation 'org.kohsuke:github-api:1.127'
-    implementation 'org.codehaus.groovy:groovy-all:3.0.7'
-    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation 'org.codehaus.groovy:groovy-xml'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
@@ -48,6 +47,7 @@ dependencies {
     implementation 'org.apache.camel:camel-micrometer'
     implementation 'org.apache.camel:camel-management'
     implementation 'org.apache.camel:camel-endpointdsl'
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation platform('org.junit:junit-bom:5.7.1')
