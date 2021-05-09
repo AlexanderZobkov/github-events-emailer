@@ -22,8 +22,6 @@
         <!-- Will complicate merges -->
         <exclude name="PublicMethodsBeforeNonPublicMethods"/>
         <exclude name="StaticMethodsBeforeInstanceMethods"/>
-        <!-- Why would one want require every class to be annotated??? -->
-        <exclude name="CompileStatic"/>
         <!-- Want to simplify code by omitting return statements where not required -->
         <exclude name="ImplicitReturnStatement"/>
     </ruleset-ref>
