@@ -6,6 +6,11 @@ image:https://img.shields.io/maven-metadata/v?color=informational&label=Latest%2
 
 image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
 
+The application can keep you up to date with what's going on in git repositories hosted at public Github or self-hosted Github Enterprise.
+It works by accepting events from Github webhooks (configuread for a git repository or a whole github organization), 
+parsing events, 
+when needed retrieving addional information on: commits, tags, users and etc. 
+Then composes emails and sends them out to a recipient via a configured smtp server.
 
 == Build
 
@@ -36,7 +41,8 @@ The application supports webhooks that are setup in the following way:
 +
 A single or multiple (as per number of commits in a push) emails will be sent that contains the following:
 +
-** Organization/user/repository name
+** Organization/user/repository/branch name
+** Pusher name
 ** Commit URL at Github 
 ** Commit author and date
 ** Commit message
@@ -49,11 +55,14 @@ An email will be sent that contains the following:
 +
 ** Organization/user/repository name
 ** Tagger name
+** Annoated or lightweight tag was created
 ** Tag name
 
 === Configuration
 
-link:src/main/resources/application.properties[See the configuration file for details].
+See link:src/main/resources/application.properties[the configuration file] for details.
+
+IMPORTANT: Configuration options whose value is `change_me` must be explicitly configured before running the application in standalone mode or as docker container.
 
 === Run
 
