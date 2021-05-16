@@ -3,8 +3,12 @@ name: CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - 'README.adoc'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - 'README.adoc'
 
   workflow_dispatch:
 
