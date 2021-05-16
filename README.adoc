@@ -36,7 +36,8 @@ The application supports webhooks that are setup in the following way:
 +
 A single or multiple (as per number of commits in a push) emails will be sent that contains the following:
 +
-** Commit URL at Github
+** Organization/user/repository name
+** Commit URL at Github 
 ** Commit author and date
 ** Commit message
 ** Author and date
@@ -46,6 +47,7 @@ A single or multiple (as per number of commits in a push) emails will be sent th
 +
 An email will be sent that contains the following:
 +
+** Organization/user/repository name
 ** Tagger name
 ** Tag name
 
