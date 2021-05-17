@@ -50,7 +50,7 @@ dependencies {
     implementation "com.google.code.findbugs:jsr305:3.0.2"
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-    testImplementation platform('org.junit:junit-bom:5.7.1')
+    testImplementation platform('org.junit:junit-bom:5.7.2')
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.junit.vintage:junit-vintage-engine"
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
