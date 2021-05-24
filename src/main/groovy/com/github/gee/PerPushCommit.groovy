@@ -84,8 +84,6 @@ class PerPushCommit implements Expression {
         } catch (IOException e) {
             builder << 'GitHub says: ' + e.message
         }
-        builder << '\n'
-
         return builder.toString()
     }
 

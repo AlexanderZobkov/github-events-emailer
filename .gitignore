@@ -1,3 +1,4 @@
+### Gradle stuff
 build
 .gradle
 
@@ -8,6 +9,9 @@ build
 *.ipr
 out
 
-### Properties used in smoke tests
-application-tests.properties
+### Properties used in dev manual tests
+application-dev.properties
+integrationTests-dev.properties
+
+### Spring boot produced logs
 github-events-emailer.log

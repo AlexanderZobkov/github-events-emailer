@@ -3,14 +3,24 @@ plugins {
     id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "ru.vyarus.quality" version "4.7.0"
-    id "maven-publish"
     id "com.gorylenko.gradle-git-properties" version "2.3.1"
+    id "maven-publish"
 }
 
 group 'com.github.alexander-zobkov'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceSets {
+    integrationTest {
+        groovy.srcDir "$projectDir/src/integrationTest/groovy"
+        resources.srcDir "$projectDir/src/integrationTest/resources"
+    }
+}
+
+// https://github.com/gradle/gradle/issues/17236
+tasks.withType(Copy).all {
+    duplicatesStrategy 'exclude'
+}
 
 bootBuildImage {
     imageName = "docker.io/zobkov/${project.name}"
@@ -47,20 +57,26 @@ dependencies {
     implementation 'org.apache.camel:camel-micrometer'
     implementation 'org.apache.camel:camel-management'
     implementation 'org.apache.camel:camel-endpointdsl'
-    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation platform('org.junit:junit-bom:5.8.1')
-    testImplementation "org.junit.jupiter:junit-jupiter"
-    testImplementation "org.junit.vintage:junit-vintage-engine"
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.vintage:junit-vintage-engine'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.apache.camel:camel-test-spring'
     testImplementation 'org.apache.camel:camel-spring-javaconfig'
-    testImplementation platform("org.spockframework:spock-bom:2.0-groovy-3.0")
+    testImplementation platform('org.spockframework:spock-bom:2.0-groovy-3.0')
     testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.spockframework:spock-junit4'
+
+    integrationTestImplementation 'org.testcontainers:spock:1.16.2'
+    integrationTestImplementation 'org.codehaus.groovy:groovy-json'
+    integrationTestImplementation 'com.github.alexdlaird:java-ngrok:1.5.5'
+    integrationTestImplementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
+    integrationTestImplementation 'org.awaitility:awaitility:4.1.1'
 }
 
 configurations {
@@ -89,10 +105,12 @@ springBoot {
 }
 
 bootRun {
-    doFirst {
-        def props = new Properties()
-        file("application-tests.properties").withInputStream { props.load(it) }
-        systemProperties = props.collectEntries { it }
+    doFirst { Exec task ->
+        Properties props = new Properties()
+        file("application-dev.properties").withInputStream { props.load(it) }
+        props.each {
+            task.environment(it.key, it.value)
+        }
     }
 }
 
@@ -110,6 +128,26 @@ publishing {
 
 test {
     useJUnitPlatform()
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    group 'verification'
+    description "Runs integration tests"
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    useJUnitPlatform()
+    doFirst { Test task ->
+        Properties props = new Properties()
+        file("integrationTests-dev.properties").withInputStream { props.load(it) }
+        props.each {
+            task.environment(it.key, it.value)
+        }
+    }
 }
 
 wrapper {

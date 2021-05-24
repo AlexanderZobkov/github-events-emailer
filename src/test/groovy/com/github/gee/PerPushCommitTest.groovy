@@ -67,6 +67,7 @@ class PerPushCommitTest extends Specification {
             Object content = it.getContent()
             content != null
             with(String.cast(content).readLines()){
+                it.size() == 13
                 it[0] == 'URL: https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e'
                 it[1] == 'SHA: 6dcb09b5b57875f334f61aebed695e2e4193db5e'
                 it[2] == 'Author: Monalisa Octocat / mona@github.com'
