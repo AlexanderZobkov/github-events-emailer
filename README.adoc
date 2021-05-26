@@ -55,8 +55,15 @@ An email will be sent that contains the following:
 +
 ** Organization/user/repository name
 ** Tagger name
-** Annoated or lightweight tag was created
+** Annotated or lightweight tag was created
 ** Tag name
+
+* https://developer.github.com/webhooks/event-payloads/#fork[Fork]
++
+An email will be sent that contains the following:
++
+** User who forked a repository
+** Fork name and url
 
 === Configuration
 

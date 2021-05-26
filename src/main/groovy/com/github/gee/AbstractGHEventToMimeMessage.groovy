@@ -23,7 +23,8 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
         List<MimeMessage> result = toList(exchange, event).collect { Object thing ->
             Map<String, ?> context = buildContext(exchange, event, thing)
             new MimeMessage((Session) null).tap {
-                from = InternetAddress.parse(from(event, context)).first()
+                String addressList = from(event, context)
+                from = InternetAddress.parse(addressList).first()
                 subject = subject(event, context)
                 setText(body(event, context), null)
             }

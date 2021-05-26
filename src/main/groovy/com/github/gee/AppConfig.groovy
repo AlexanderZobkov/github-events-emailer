@@ -65,6 +65,8 @@ class AppConfig {
                                 maxCommitAge: maxCommitAge)),
                 (GHEventPayload.Create): new DebugInfoAppender(delegate:
                         new GHCreateToMimeMessage()),
+                (GHEventPayload.Fork): new DebugInfoAppender(delegate:
+                        new GHForkToMimeMessage(gitHub: github())),
         ]
     }
 
