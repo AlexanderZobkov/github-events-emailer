@@ -1,6 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
+import groovy.util.logging.Log4j2
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component
  */
 @CompileStatic
 @Component
+@Log4j2('routeLog')
 class GHEventsTranslatorRoute extends EndpointRouteBuilder {
 
     /**
@@ -34,27 +36,36 @@ class GHEventsTranslatorRoute extends EndpointRouteBuilder {
             @Override
             <T> T evaluate(Exchange exchange, Class<T> type) {
                 String eventType = exchange.in.headers['X-GitHub-Event']
-                appConfig.github().parseEventPayload(
+                GHEventPayload unmarshalledEvent = appConfig.github().parseEventPayload(
                         exchange.in.getMandatoryBody(Reader),
-                        eventToClass(eventType)) as T
+                        eventToClass(eventType))
+                type.cast(unmarshalledEvent)
             }
 
-            private Class<GHEventPayload> eventToClass(String event) {
+            private Class<GHEventPayload> eventToClass(String eventType) {
                 return this.
                         class.
                         classLoader.
-                        loadClass('org.kohsuke.github.GHEventPayload$' + event.capitalize()) as Class<GHEventPayload>
+                        loadClass('org.kohsuke.github.GHEventPayload$' +
+                                eventType.capitalize()) as Class<GHEventPayload>
             }
         }
     }
 
     Expression delegatingTranslator() {
         new Expression() {
+            private final String supportedEvents = appConfig.translationMap().keySet().join(',')
+
             @Override
             <T> T evaluate(Exchange exchange, Class<T> type) {
-                GHEventPayload payload = exchange.in.getMandatoryBody(GHEventPayload)
-                Expression delegate = appConfig.translationMap()[payload.class as Class]
-                return delegate.evaluate(exchange, type)
+                String eventType = exchange.in.headers['X-GitHub-Event']
+                Expression translator = appConfig.translationMap()[eventType]
+                if (translator) {
+                    return translator.evaluate(exchange, type)
+                }
+                routeLog.warn("Ignoring unsupported event: ${eventType}, " +
+                        "supported events: ${supportedEvents}")
+                return type.cast([])
             }
         }
     }

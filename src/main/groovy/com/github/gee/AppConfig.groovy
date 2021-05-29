@@ -7,7 +7,6 @@ import org.apache.camel.component.micrometer.messagehistory.MicrometerMessageHis
 import org.apache.camel.component.micrometer.routepolicy.MicrometerRoutePolicyFactory
 import org.apache.camel.spring.boot.CamelContextConfiguration
 import org.kohsuke.github.GHCommitDiffRetriever
-import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
 import org.kohsuke.github.GitHubBuilder
 import org.springframework.beans.factory.annotation.Value
@@ -57,15 +56,15 @@ class AppConfig {
     int maxCommitAge
 
     @Bean
-    Map<Class, ? extends Expression> translationMap() {
+    Map<String, ? extends Expression> translationMap() {
         return [
-                (GHEventPayload.Push)  : new DebugInfoAppender(delegate:
+                push  : new DebugInfoAppender(delegate:
                         new GHPushToMimeMessage(
                                 commitDiffRetriever: commitRetriever(),
                                 maxCommitAge: maxCommitAge)),
-                (GHEventPayload.Create): new DebugInfoAppender(delegate:
+                create: new DebugInfoAppender(delegate:
                         new GHCreateToMimeMessage()),
-                (GHEventPayload.Fork): new DebugInfoAppender(delegate:
+                fork: new DebugInfoAppender(delegate:
                         new GHForkToMimeMessage(gitHub: github())),
         ]
     }
