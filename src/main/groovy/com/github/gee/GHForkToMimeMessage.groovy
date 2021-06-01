@@ -9,12 +9,11 @@ import org.kohsuke.github.GitHub
  * Translates {@link org.kohsuke.github.GHEventPayload.Fork} into {@link javax.mail.internet.MimeMessage}.
  *
  * From: A user who created the fork
- * Subject: New fork for <repository name>
- * Body: A text telling that a particular user forked <the repository> into private or public <repository>
+ * Subject: New fork for <repository>
+ * Body: A text telling that a <user> forked <repository> into private or public <repository>
  *     and <repository url at github>.
  */
 @CompileStatic
-@SuppressWarnings('DuplicateStringLiteral')
 @Log4j2
 class GHForkToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Fork> {
 
@@ -28,8 +27,8 @@ class GHForkToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Fo
 
     @Override
     protected String body(GHEventPayload.Fork event, Map<String, ?> context) throws IOException {
-        "A user: ${event.sender.login} forked the repository: ${event.repository.fullName} " +
-                "into a ${event.forkee.private ? 'private' : 'public'} repository: ${event.forkee.fullName} " +
+        "A user ${event.sender.login} forked the repository ${event.repository.fullName} " +
+                "into a ${event.forkee.private ? 'private' : 'public'} repository ${event.forkee.fullName} " +
                 "(${event.forkee.htmlUrl})"
     }
 

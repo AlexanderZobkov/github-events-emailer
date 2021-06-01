@@ -63,7 +63,9 @@ class AppConfig {
                                 commitDiffRetriever: commitRetriever(),
                                 maxCommitAge: maxCommitAge)),
                 create: new DebugInfoAppender(delegate:
-                        new GHCreateToMimeMessage()),
+                        new GHCreateToMimeMessage(gitHub: github())),
+                delete: new DebugInfoAppender(delegate:
+                        new GHDeleteToMimeMessage(gitHub: github())),
                 fork: new DebugInfoAppender(delegate:
                         new GHForkToMimeMessage(gitHub: github())),
         ]

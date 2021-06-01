@@ -1,3 +1,5 @@
+:toc: macro
+
 = GitHub events emailer
 
 image:https://github.com/AlexanderZobkov/github-events-emailer/workflows/CI/badge.svg?branch=master["Build Status", link="https://github.com/AlexanderZobkov/github-events-emailer/actions?query=workflow%3ACI"]
@@ -7,10 +9,12 @@ image:https://img.shields.io/maven-metadata/v?color=informational&label=Latest%2
 image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
 
 The application can keep you up to date with what's going on in git repositories hosted at public Github or self-hosted Github Enterprise.
-It works by accepting events from Github webhooks (configuread for a git repository or a whole github organization), 
+It works by accepting events from Github webhooks (configured for a git repository or a whole github organization),
 parsing events, 
-when needed retrieving addional information on: commits, tags, users and etc. 
+when needed retrieving additional information on: commits, tags, users and etc.
 Then composes emails and sends them out to a recipient via a configured smtp server.
+
+toc::[]
 
 == Build
 
@@ -49,7 +53,7 @@ A single or multiple (as per number of commits in a push) emails will be sent th
 ** Author and date
 ** Whole commit diff including a list of changed files
 
-* https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation] (Only tag creation events are supported)
+* https://developer.github.com/webhooks/event-payloads/#create[Branch or tag creation]
 +
 An email will be sent that contains the following:
 +
@@ -57,6 +61,15 @@ An email will be sent that contains the following:
 ** Tagger name
 ** Annotated or lightweight tag was created
 ** Tag name
+** User who created branch
+
+* https://developer.github.com/webhooks/event-payloads/#delete[Branch or tag deletion]
++
+An email will be sent that contains the following:
++
+** Organization/user/repository name
+** Tag or branch name
+** User who deleted branch or tag
 
 * https://developer.github.com/webhooks/event-payloads/#fork[Fork]
 +
