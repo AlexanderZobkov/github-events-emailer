@@ -4,8 +4,6 @@
 
 image:https://github.com/AlexanderZobkov/github-events-emailer/workflows/CI/badge.svg?branch=master["Build Status", link="https://github.com/AlexanderZobkov/github-events-emailer/actions?query=workflow%3ACI"]
 image:https://img.shields.io/docker/v/zobkov/github-events-emailer?label=docker%20hub["Docker Image Version (latest by date)", link="https://hub.docker.com/r/zobkov/github-events-emailer/tags?page=1&ordering=last_updated"]
-image:https://img.shields.io/maven-metadata/v?color=informational&label=Latest%20snapshot&metadataUrl=https%3A%2F%2Foss.jfrog.org%2Fartifactory%2Foss-snapshot-local%2Fcom%2Fgithub%2Falexander-zobkov%2Fgithub-events-emailer%2Fmaven-metadata.xml["Latest SNAPSHOT", link="https://oss.jfrog.org/artifactory/oss-snapshot-local/com/github/alexander-zobkov/github-events-emailer/"]
-
 image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
 
 The application can keep you up to date with what's going on in git repositories hosted at public Github or self-hosted Github Enterprise.

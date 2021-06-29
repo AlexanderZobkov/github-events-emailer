@@ -37,10 +37,7 @@ jobs:
 
       - name: Publish artifacts
         if: matrix.java == '8' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: ./gradlew artifactoryPublish bootBuildImage --publishImage
+        run: ./gradlew bootBuildImage --publishImage
         env:
-          OJO_USER: ${{ secrets.BINTRAY_USER }}
-          OJO_KEY: ${{ secrets.BINTRAY_KEY }}
-          BUILD_NUMBER: ${{ github.run_number }}
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
