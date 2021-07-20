@@ -26,10 +26,10 @@ toc::[]
 
 https://developer.github.com/webhooks/creating/
 
-The application supports webhooks that are setup in the following way:
+The application supports webhooks that are configured in the following way:
 
 * Payload URL
-** It is set with plain HTTP with URL any path. Secured connection with SSL is not supported yet.
+** It is set with plain HTTP with URL any path. For secured connection, see section <<Using HTTPS>>.
 * Content type
 ** It is set to `application/json`. The `application/x-www-form-urlencoded` content type is not supported yet.
 * Secret
@@ -106,6 +106,18 @@ docker run -p 8080:8080 -e "github.oauthToken=<token>" -e "..." docker.io/zobkov
 
 You can adjust the configuration of the instance by passing one or more environment variables on the `docker run` command line.
 See the list of available variables in link:src/main/resources/application.properties[application.properties].
+
+=== Using HTTPS
+
+The application itself supports accept connections with the plain HTTP only.
+However, the application can be put behind a reverse-proxy with configured HTTPS transport to enable secured connections.
+
+The following are examples of reverse-proxies:
+
+- link:https://gist.github.com/BretFisher/ede260ba033fabb3993062ae6e766f58[Traefik]
+- Envoy
+- link:https://caddyserver.com/docs/caddyfile/directives/reverse_proxy[Caddy]
+- Nginx
 
 === Monitoring
 
