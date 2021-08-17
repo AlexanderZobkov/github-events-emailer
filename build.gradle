@@ -102,3 +102,7 @@ publishing {
 test {
     useJUnitPlatform()
 }
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
