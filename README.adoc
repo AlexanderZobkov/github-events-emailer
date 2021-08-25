@@ -6,11 +6,12 @@ image:https://github.com/AlexanderZobkov/github-events-emailer/workflows/CI/badg
 image:https://img.shields.io/docker/v/zobkov/github-events-emailer?label=docker%20hub["Docker Image Version (latest by date)", link="https://hub.docker.com/r/zobkov/github-events-emailer/tags?page=1&ordering=last_updated"]
 image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emailer[GitHub]
 
-The application can keep you up to date with what's going on in git repositories hosted at public Github or self-hosted Github Enterprise.
-It works by accepting events from Github webhooks (configured for a git repository or a whole github organization),
+The application can keep you up to date with what’s going on in git repositories hosted at GitHub (public or self-hosted enterprise) 
+or you can even perform an instant review of your peers.
+It works by accepting events from GitHub webhooks (configured for a git repository or a whole GitHub organization), 
 parsing events, 
-when needed retrieving additional information on: commits, tags, users and etc.
-Then composes emails and sends them out to a recipient via a configured smtp server.
+when needed retrieving additional information on commits, tags, users, etc. 
+Then composes emails and sends them out to a recipient via a configured SMTP server.
 
 toc::[]
 
