@@ -1,6 +1,5 @@
 package com.github.gee
 
-import com.sun.mail.util.MailConnectException
 import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
@@ -51,7 +50,7 @@ class EmailSenderRoute extends EndpointRouteBuilder {
 
     void configure() throws Exception {
         from(seda('email-sender').concurrentConsumers(1)).id('email-sender')
-                .onException(MailConnectException)
+                .onException(IOException)
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
                 .end()
