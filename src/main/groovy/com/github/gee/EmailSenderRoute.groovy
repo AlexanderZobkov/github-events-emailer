@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder
+import org.apache.camel.component.mail.MailUtils
 import org.springframework.beans.factory.annotation.Value
 import javax.annotation.Nonnull
 import org.springframework.stereotype.Component
@@ -53,6 +54,7 @@ class EmailSenderRoute extends EndpointRouteBuilder {
                 .onException(IOException)
                     .maximumRedeliveries(smtpServerRedeliveryAttempts)
                     .maximumRedeliveryDelay(smtpServerRedeliveryDelay)
+                    .process().message(logFailedToDeliverEmails).id('log-failed-to-deliver-emails')
                 .end()
                 .split(body()).id('split-emails-list')
                 .removeHeaders('*').id('remove-headers-sending-email')
@@ -71,6 +73,10 @@ class EmailSenderRoute extends EndpointRouteBuilder {
                 message.setRecipient(Message.RecipientType.TO, InternetAddress.parse(recipients).first())
             }
         }
+    }
+
+    Closure<Void> logFailedToDeliverEmails = { org.apache.camel.Message message ->
+        log.warn("Failed to deliver MimeMessage: ${MailUtils.dumpMessage(message.getMandatoryBody(MimeMessage))}")
     }
 
 }
