@@ -10,10 +10,12 @@ import javax.annotation.Nonnull
 import javax.mail.internet.MimeMessage
 
 /**
- * Appends webhook debug information to the email.
+ * Appends webhook debug information to the body of {@link MimeMessage}.
  *
  * Adds X-GitHub-xxx headers from HTTP request to SMTP headers.
- * Adds X-GitHub-Delivery header to the email body. It supports plain text and html emails.
+ * Adds X-GitHub-Delivery header to the email body.
+ *
+ * It supports plain text and html emails.
  */
 @CompileStatic
 class DebugInfoAppender implements Expression {

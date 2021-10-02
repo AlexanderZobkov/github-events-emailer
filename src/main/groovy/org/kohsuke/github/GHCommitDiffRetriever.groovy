@@ -19,7 +19,7 @@ class GHCommitDiffRetriever {
      * @return the commit diff.
      * @throws IOException the io exception.
      */
-    String getCommit(GHRepository repo, String sha1) throws IOException {
+    String getDiff(GHRepository repo, String sha1) throws IOException {
         Requester requester = repo.root.createRequest()
         InputStream diff = requester
                 .withPreview('application/vnd.github.v3.diff')

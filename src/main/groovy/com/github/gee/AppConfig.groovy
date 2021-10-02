@@ -59,14 +59,16 @@ class AppConfig {
     Map<String, ? extends Expression> translationMap() {
         return [
                 push  : new DebugInfoAppender(delegate:
-                        new GHPushToMimeMessage(
-                                commitDiffRetriever: commitRetriever(),
-                                maxCommitAge: maxCommitAge)),
+                        new GHPushOldNewCommits(
+                                perCommitMimeMessages: new PerPushCommit(commitDiffRetriever: commitRetriever()),
+                                digestMimeMessage: new DigestPushCommit(),
+                                maxCommitAge: maxCommitAge)
+                ),
                 create: new DebugInfoAppender(delegate:
                         new GHCreateToMimeMessage(gitHub: github())),
                 delete: new DebugInfoAppender(delegate:
                         new GHDeleteToMimeMessage(gitHub: github())),
-                fork: new DebugInfoAppender(delegate:
+                fork  : new DebugInfoAppender(delegate:
                         new GHForkToMimeMessage(gitHub: github())),
         ]
     }

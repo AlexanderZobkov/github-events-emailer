@@ -26,7 +26,7 @@ abstract class AbstractGHEventToMimeMessage<E extends GHEventPayload> implements
                 String addressList = from(event, context)
                 from = InternetAddress.parse(addressList).first()
                 subject = subject(event, context)
-                setText(body(event, context), null)
+                setText(body(event, context))
             }
         }
         return type.cast(result)
