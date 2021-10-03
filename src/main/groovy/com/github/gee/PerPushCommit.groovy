@@ -77,8 +77,14 @@ class PerPushCommit implements Expression {
                 .join('\n') + '\n'
 
         builder << '---\n'
-        // Need to get a diff as GHCommit.File.patch contains changes for text only and do not show changes for file attributes.
-        builder << commitDiffRetriever.getDiff(event.repository, sha) + '\n'
+        try {
+            // Need to get a diff as GHCommit.File.patch contains only textual diffs
+            // however there is a need to get textual and binary diffs.
+            builder << commitDiffRetriever.getDiff(event.repository, sha)
+        } catch (IOException e) {
+            builder << 'GitHub says: ' + e.message
+        }
+        builder << '\n'
 
         return builder.toString()
     }
