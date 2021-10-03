@@ -57,6 +57,9 @@ dependencies {
     }
     testImplementation 'org.apache.camel:camel-test-spring'
     testImplementation 'org.apache.camel:camel-spring-javaconfig'
+    testImplementation platform("org.spockframework:spock-bom:2.0-groovy-3.0")
+    testImplementation 'org.spockframework:spock-core'
+    testImplementation 'org.spockframework:spock-junit4'
 }
 
 configurations {
