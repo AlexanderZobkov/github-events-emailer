@@ -51,24 +51,20 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
         delegateSelector[event.refType].subject(event, context)
     }
 
-    @SuppressWarnings('UnusedPrivateMethodParameter')
-    private String computeSubject(GHEventPayload.Create event, Map<String, ?> context) {
+    private String computeSubject(GHEventPayload.Create event) {
         return "New ${event.refType} in repository ${event.repository.fullName} - ${event.ref}"
+    }
+
+    private String computeFrom(GHEventPayload.Create event) {
+        URL apiUrl = new URL(gitHub.apiUrl)
+        return "${event.sender.login} <noreply@${apiUrl.host}>"
     }
 
     private class TagCreated extends AbstractGHEventToMimeMessage<GHEventPayload.Create> {
 
         @Override
         protected String from(GHEventPayload.Create event, Map<String, ?> context) {
-            GHRef tagRef = event.repository.getRefs('tag')
-                    .find { GHRef tag -> tag.ref - 'refs/heads/' - 'refs/tags/' == event.ref }
-            try {
-                GHTagObject annotatedTag = event.repository.getTagObject(tagRef.object.sha)
-                return annotatedTag.tagger.email
-            } catch (FileNotFoundException e) {
-                GHCommit commit = event.repository.getCommit(tagRef.object.sha)
-                return commit.commitShortInfo.author.email
-            }
+            computeFrom(event)
         }
 
         @Override
@@ -76,7 +72,9 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
             String ref = event.ref
             StringBuilder builder = new StringBuilder()
             GHRef tagRef = event.repository.getRefs('tag')
-                    .find { GHRef tag -> tag.ref - 'refs/heads/' - 'refs/tags/' == ref }
+                    .find { GHRef tag ->
+                        tag.ref - 'refs/heads/' - 'refs/tags/' == ref
+                    }
             try {
                 GHTagObject annotatedTag = event.repository.getTagObject(tagRef.object.sha)
                 GitUser tagger = annotatedTag.tagger
@@ -90,13 +88,12 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
                 builder << "Tagger: ${[author.name, author.email].join(' / ')}\n"
                 builder << "Message: ${commit.commitShortInfo.message}\n"
             }
-
             return builder.toString()
         }
 
         @Override
         protected String subject(GHEventPayload.Create event, Map<String, ?> context) {
-            computeSubject(event, context)
+            computeSubject(event)
         }
     }
 
@@ -104,8 +101,7 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
 
         @Override
         protected String from(GHEventPayload.Create event, Map<String, ?> context) {
-            URL apiUrl = new URL(gitHub.apiUrl)
-            "${event.sender.login} <noreply@${apiUrl.host}>"
+            computeFrom(event)
         }
 
         @Override
@@ -116,7 +112,7 @@ class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.
 
         @Override
         protected String subject(GHEventPayload.Create event, Map<String, ?> context) {
-            computeSubject(event, context)
+            computeSubject(event)
         }
     }
 
