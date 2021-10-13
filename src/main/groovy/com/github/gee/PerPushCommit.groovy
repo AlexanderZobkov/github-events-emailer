@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.kohsuke.github.GHCommit
-import org.kohsuke.github.GHCommitDiffRetriever
+import org.kohsuke.github.AbstractGHCommitRetriever
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitUser
 
@@ -18,7 +18,7 @@ import javax.mail.internet.MimeMessage
 @CompileStatic
 class PerPushCommit implements Expression {
 
-    GHCommitDiffRetriever commitDiffRetriever
+    AbstractGHCommitRetriever commitDiffRetriever
 
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
@@ -80,7 +80,7 @@ class PerPushCommit implements Expression {
         try {
             // Need to get a diff as GHCommit.File.patch contains only textual diffs
             // however there is a need to get textual and binary diffs.
-            builder << commitDiffRetriever.getDiff(event.repository, sha)
+            builder << commitDiffRetriever.getCommit(event.repository, sha)
         } catch (IOException e) {
             builder << 'GitHub says: ' + e.message
         }

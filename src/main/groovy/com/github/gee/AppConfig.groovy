@@ -6,7 +6,8 @@ import org.apache.camel.Expression
 import org.apache.camel.component.micrometer.messagehistory.MicrometerMessageHistoryFactory
 import org.apache.camel.component.micrometer.routepolicy.MicrometerRoutePolicyFactory
 import org.apache.camel.spring.boot.CamelContextConfiguration
-import org.kohsuke.github.GHCommitDiffRetriever
+import org.kohsuke.github.AbstractGHCommitRetriever
+import org.kohsuke.github.ClippingGHCommitDiffRetriever
 import org.kohsuke.github.GitHub
 import org.kohsuke.github.GitHubBuilder
 import org.springframework.beans.factory.annotation.Value
@@ -48,12 +49,15 @@ class AppConfig {
     }
 
     @Bean
-    GHCommitDiffRetriever commitRetriever() {
-        return new GHCommitDiffRetriever()
+    AbstractGHCommitRetriever commitRetriever() {
+        return new ClippingGHCommitDiffRetriever(maxChars: maxChar)
     }
 
     @Value('${push_event.commits.compact.maxCommitAge}')
     int maxCommitAge
+
+    @Value('${push_event.commits.diff.maxChar}')
+    int maxChar
 
     @Bean
     Map<String, ? extends Expression> translationMap() {

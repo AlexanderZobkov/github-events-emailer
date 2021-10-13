@@ -5,7 +5,7 @@ import org.apache.camel.Exchange
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.support.DefaultExchange
 import org.kohsuke.github.GHCommit
-import org.kohsuke.github.GHCommitDiffRetriever
+import org.kohsuke.github.AbstractGHCommitRetriever
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GHRepository
 import org.kohsuke.github.HttpException
@@ -32,7 +32,7 @@ class PerPushCommitTest extends Specification {
     GHCommit.GHAuthor commiter = Mock()
     GHCommit.File file1 = Mock()
 
-    GHCommitDiffRetriever diffRetriever = Mock()
+    AbstractGHCommitRetriever diffRetriever = Mock()
 
     SimpleDateFormat format = new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy')
     Date expectedCommitDate
@@ -112,7 +112,7 @@ class PerPushCommitTest extends Specification {
         file1.status >> 'modified'
         ghCommit.files >> [file1, ]
 
-        diffRetriever.getDiff(_,_) >> 'diff'
+        diffRetriever.getCommit(_,_) >> 'diff'
     }
 
     def "failed to get a diff for the commit"() {
@@ -161,7 +161,7 @@ class PerPushCommitTest extends Specification {
         file1.status >> 'modified'
         ghCommit.files >> [file1, ]
 
-        diffRetriever.getDiff(_,_) >> {
+        diffRetriever.getCommit(_,_) >> {
             IOException e = new IOException('Server returned HTTP response code: 500 for URL: https://abc/02c4740274e045d2e87ff659c53abae5eeb875cd')
             String responseMessage = '''
 {"message":"Server Error: Sorry, this diff is taking too long to generate.","errors":[{"resource":"Commit","field":"diff","code":"not_available"}],"documentation_url":"https://docs.github.com/enterprise/2.22/rest/reference/repos#get-a-commit"}
