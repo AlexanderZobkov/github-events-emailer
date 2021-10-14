@@ -27,12 +27,12 @@ class ClippingGHCommitDiffRetriever extends AbstractGHCommitRetriever {
         { InputStream is ->
             InputStreamReader reader = new InputStreamReader(is)
             StringWriter writer = new StringWriter(maxChars + 1)
-            IOUtils.copyLarge(reader, writer, 0, maxChars)
-            if (maxChars >= 0) {
-                writer.toString() +
-                        "\n...\n[Diff clipped after ${maxChars} chars]"
+            long charsCopied = IOUtils.copyLarge(reader, writer, 0, maxChars)
+            String answer = writer
+            if ((charsCopied == maxChars) && (IOUtils.EOF != reader.read())) {
+                answer + "\n...\n[Diff clipped after ${maxChars} chars]"
             } else {
-                writer.toString()
+                answer
             }
         } as InputStreamFunction<String>
     }

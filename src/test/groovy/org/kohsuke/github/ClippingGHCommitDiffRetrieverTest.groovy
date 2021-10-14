@@ -40,4 +40,26 @@ Differenzlinie 3'''
         fetchedDiff == diff
     }
 
+    def "can retrieve whole diff that is smaller size than maxChars to retrieve"() {
+        given:
+        AbstractGHCommitRetriever retriever = new ClippingGHCommitDiffRetriever()
+        retriever.maxChars = 1000
+        InputStream is = IOUtils.toInputStream(diff, Charset.defaultCharset())
+        when:
+        String fetchedDiff = retriever.responseHandler().apply(is)
+        then:
+        fetchedDiff == diff
+    }
+
+    def "can retrieve diff that has the same chars as maxChars"() {
+        given:
+        AbstractGHCommitRetriever retriever = new ClippingGHCommitDiffRetriever()
+        retriever.maxChars = diff.length()
+        InputStream is = IOUtils.toInputStream(diff, Charset.defaultCharset())
+        when:
+        String fetchedDiff = retriever.responseHandler().apply(is)
+        then:
+        fetchedDiff == diff
+    }
+
 }
