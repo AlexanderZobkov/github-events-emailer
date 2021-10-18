@@ -25,6 +25,7 @@ class GHEventsTranslatorRoute extends EndpointRouteBuilder {
     @Override
     void configure() throws Exception {
         from(seda('github-events').concurrentConsumers(1)).id('translator')
+                .split(body()).id('split-events-list')
                 .transform(delegatingTranslator()).id('translate-github-events')
                 .to(seda('email-sender').blockWhenFull(true)).id('to-email-sender')
     }
