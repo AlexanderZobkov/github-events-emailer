@@ -8,11 +8,16 @@ import org.apache.camel.component.micrometer.routepolicy.MicrometerRoutePolicyFa
 import org.apache.camel.spring.boot.CamelContextConfiguration
 import org.kohsuke.github.AbstractGHCommitRetriever
 import org.kohsuke.github.ClippingGHCommitDiffRetriever
+import org.kohsuke.github.GHOrganization
+import org.kohsuke.github.GHRepository
 import org.kohsuke.github.GitHub
 import org.kohsuke.github.GitHubBuilder
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
+import java.time.Instant
 
 /**
  * Configures the app.
@@ -47,6 +52,36 @@ class AppConfig {
         }
         return answer
     }
+
+    @ConditionalOnProperty(
+            value = 'method.retrieve.events',
+            havingValue = 'poller',
+            matchIfMissing = false)
+    @Bean
+    GHEventsPoller ghEventsPoller() {
+        Instant since = Instant.now().minusMillis(backwardOffset)
+        int pageSize = 30
+        List<GHEventsPoller> orgsPollers = organizations.collect { String name ->
+            GHOrganization org = github().getOrganization(name)
+            new SimpleGHEventsPoller(eventsIteratorSupplier: { org.listEvents().withPageSize(pageSize).iterator() },
+                    since: since) as GHEventsPoller
+        }
+        List<GHEventsPoller> reposPollers = repositories.collect { String name ->
+            GHRepository repo = github().getRepository(name)
+            new SimpleGHEventsPoller(eventsIteratorSupplier: { repo.listEvents().withPageSize(pageSize).iterator() },
+                    since: since) as GHEventsPoller
+        }
+        new ComposingGHEventsPoller(pollers: orgsPollers + reposPollers)
+    }
+
+    @Value('${poller.backwardOffset}')
+    long backwardOffset
+
+    @Value('${poller.organizations}')
+    List<String> organizations
+
+    @Value('${poller.repositories}')
+    List<String> repositories
 
     @Bean
     AbstractGHCommitRetriever commitRetriever() {

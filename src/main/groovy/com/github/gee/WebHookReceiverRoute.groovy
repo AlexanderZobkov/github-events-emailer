@@ -9,11 +9,16 @@ import org.apache.camel.builder.endpoint.EndpointRouteBuilder
 import org.kohsuke.github.GHEventPayload
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 
 /**
  * A route that listens for calls from Github webhooks.
  */
+@ConditionalOnProperty(
+        value='method.retrieve.events',
+        havingValue = 'webhook',
+        matchIfMissing = false)
 @CompileStatic
 @Component
 @SuppressWarnings('DuplicateStringLiteral')
