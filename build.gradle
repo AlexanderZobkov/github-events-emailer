@@ -36,7 +36,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'org.kohsuke:github-api:1.133'
+    implementation 'org.kohsuke:github-api:1.135'
     implementation 'org.codehaus.groovy:groovy-xml'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
