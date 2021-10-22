@@ -41,7 +41,8 @@ class WebHookReceiverRoute extends EndpointRouteBuilder {
 
     @Override
     void configure() throws Exception {
-        from(jetty("http://${webhookListenAddress}:${webhookListenPort}").matchOnUriPrefix(true))
+        from(jetty("http://${webhookListenAddress}:${webhookListenPort}")
+                .matchOnUriPrefix(true).httpMethodRestrict('POST'))
                 .routeId('github-webhook')
                 .choice().id('events-filter')
                     .when().message(shouldPass)
