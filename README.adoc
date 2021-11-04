@@ -8,7 +8,7 @@ image:https://img.shields.io/github/license/AlexanderZobkov/github-events-emaile
 
 The application can keep you up to date with what’s going on in git repositories hosted at GitHub (public or self-hosted enterprise) 
 or you can even perform an instant review of your peers.
-It works by accepting events from GitHub webhooks (configured for a git repository or a whole GitHub organization), 
+It works by accepting events from GitHub webhooks or polling events from GitHub,
 parsing events, 
 when needed retrieving additional information on commits, tags, users, etc. 
 Then composes emails and sends them out to a recipient via a configured SMTP server.
