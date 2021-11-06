@@ -1,7 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Slf4j
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
  */
 @CompileStatic
 @Component
-@Log4j2('routeLog')
+@Slf4j('routeLog')
 class GHEventsTranslatorRoute extends EndpointRouteBuilder {
 
     /**

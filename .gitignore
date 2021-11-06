@@ -10,3 +10,4 @@ out
 
 ### Properties used in smoke tests
 application-tests.properties
+github-events-emailer.log

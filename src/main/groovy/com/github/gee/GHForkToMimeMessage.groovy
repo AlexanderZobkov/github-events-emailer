@@ -1,7 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Slf4j
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GitHub
 
@@ -14,7 +14,7 @@ import org.kohsuke.github.GitHub
  *     and <repository url at github>.
  */
 @CompileStatic
-@Log4j2
+@Slf4j
 class GHForkToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Fork> {
 
     GitHub gitHub

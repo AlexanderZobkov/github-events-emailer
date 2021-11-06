@@ -1,7 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Slf4j
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.kohsuke.github.GHEvent
@@ -15,7 +15,7 @@ import java.lang.reflect.Field
 /**
  * Translates {@link GHEventInfo} into {@link GHEventPayload}.
  */
-@Log4j2
+@Slf4j
 @CompileStatic
 class GHEventsInfoToGHEventPayloadTranslator implements Expression {
 

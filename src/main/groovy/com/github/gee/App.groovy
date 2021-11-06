@@ -1,8 +1,11 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
+import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+
+import java.util.logging.LogManager
 
 /**
 *  The app main class.
@@ -12,8 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 class App {
 
     static {
-        // Redirects JUL to Log4J
-        System.properties.setProperty('java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager')
+        // Redirects JUL to Sl4j
+        LogManager.getLogManager().reset()
+        SLF4JBridgeHandler.install()
     }
 
     /**

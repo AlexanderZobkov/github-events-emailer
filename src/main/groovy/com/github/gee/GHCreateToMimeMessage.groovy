@@ -1,7 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
-import groovy.util.logging.Log4j2
+import groovy.util.logging.Slf4j
 import org.kohsuke.github.GHCommit
 import org.kohsuke.github.GHEventPayload
 import org.kohsuke.github.GHRef
@@ -26,7 +26,7 @@ import org.kohsuke.github.GitUser
  *   Body: A text telling that <refType> has been created in <repository> by <user>.
  */
 @CompileStatic
-@Log4j2
+@Slf4j
 class GHCreateToMimeMessage extends AbstractGHEventToMimeMessage<GHEventPayload.Create> {
 
     private final Map<String, AbstractGHEventToMimeMessage> delegateSelector = [
