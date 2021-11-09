@@ -6,7 +6,6 @@ import groovy.xml.XmlParser
 import groovy.xml.XmlUtil
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
-import javax.annotation.Nonnull
 import javax.mail.internet.MimeMessage
 
 /**
@@ -20,13 +19,10 @@ import javax.mail.internet.MimeMessage
 @CompileStatic
 class DebugInfoAppender implements Expression {
 
-    @Nonnull
-    Expression delegate
-
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
-        List<MimeMessage> result = delegate.evaluate(exchange, List<MimeMessage>)
-        List<MimeMessage> answer = result.collect { MimeMessage mimeMessage ->
+        List<MimeMessage> body = exchange.message.getMandatoryBody(List<MimeMessage>)
+        List<MimeMessage> answer = body.collect { MimeMessage mimeMessage ->
             populateHeaders(mimeMessage, exchange)
             appendTail(mimeMessage, exchange)
             mimeMessage

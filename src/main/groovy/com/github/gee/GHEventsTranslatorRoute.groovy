@@ -27,6 +27,7 @@ class GHEventsTranslatorRoute extends EndpointRouteBuilder {
         from(seda('github-events').concurrentConsumers(1)).id('translator')
                 .split(body()).id('split-events-list')
                 .transform(delegatingTranslator()).id('translate-github-events')
+                .transform(populateDebugInfo()).id('populate-debug-info')
                 .to(seda('email-sender').blockWhenFull(true)).id('to-email-sender')
     }
 
@@ -46,6 +47,10 @@ class GHEventsTranslatorRoute extends EndpointRouteBuilder {
                 return type.cast([])
             }
         }
+    }
+
+    Expression populateDebugInfo() {
+        new DebugInfoAppender()
     }
 
 }

@@ -97,18 +97,13 @@ class AppConfig {
     @Bean
     Map<String, ? extends Expression> translationMap() {
         return [
-                push  : new DebugInfoAppender(delegate:
-                        new GHPushOldNewCommits(
+                push  : new GHPushOldNewCommits(
                                 perCommitMimeMessages: new PerPushCommit(commitDiffRetriever: commitRetriever()),
                                 digestMimeMessage: new DigestPushCommit(),
-                                maxCommitAge: maxCommitAge)
-                ),
-                create: new DebugInfoAppender(delegate:
-                        new GHCreateToMimeMessage(gitHub: github())),
-                delete: new DebugInfoAppender(delegate:
-                        new GHDeleteToMimeMessage(gitHub: github())),
-                fork  : new DebugInfoAppender(delegate:
-                        new GHForkToMimeMessage(gitHub: github())),
+                                maxCommitAge: maxCommitAge),
+                create: new GHCreateToMimeMessage(gitHub: github()),
+                delete: new GHDeleteToMimeMessage(gitHub: github()),
+                fork  : new GHForkToMimeMessage(gitHub: github()),
         ]
     }
 
