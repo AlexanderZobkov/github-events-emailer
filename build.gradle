@@ -142,10 +142,12 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
     useJUnitPlatform()
     doFirst { Test task ->
-        Properties props = new Properties()
-        file("integrationTests-dev.properties").withInputStream { props.load(it) }
-        props.each {
-            task.environment(it.key, it.value)
+        if (!Boolean.parseBoolean(System.getenv('CI'))) {
+            Properties props = new Properties()
+            file("integrationTests-dev.properties").withInputStream { props.load(it) }
+            props.each {
+                task.environment(it.key, it.value)
+            }
         }
     }
 }
