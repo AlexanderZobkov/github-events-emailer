@@ -27,7 +27,7 @@ import spock.lang.TempDir
 import org.awaitility.Awaitility
 import java.util.concurrent.TimeUnit
 
-class IntegrationTests extends Specification {
+class WebhookIntegrationTests extends Specification {
 
     static String token = System.getenv('GH_TOKEN')
     static String repo = System.getenv('GH_REPO')
