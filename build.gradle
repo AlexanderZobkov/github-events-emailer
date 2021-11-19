@@ -105,7 +105,7 @@ springBoot {
 }
 
 bootRun {
-    doFirst { Exec task ->
+    doFirst { JavaExec task ->
         Properties props = new Properties()
         file("application-dev.properties").withInputStream { props.load(it) }
         props.each {
