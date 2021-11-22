@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 /**
  * A route that pulls events from Github.
  * https://docs.github.com/en/rest/reference/activity#events
+ *
+ * Outputs {@link org.kohsuke.github.GHEventPayload}.
  */
 @ConditionalOnProperty(
         value='method.retrieve.events',
@@ -50,7 +52,8 @@ class PullingGHEventsReceiverRoute extends EndpointRouteBuilder {
                 }.id('set-scheduler-polled-messages')
                 .transform(
                         new GHEventsInfoToGHEventPayloadTranslator(github: appConfig.github())
-                ).id('translate-github-eventinfos')
+                ).id('translate-github-eventinfos-to-eventpayloads')
+                .split(body()).id('split-eventpayloads-list')
                 .to(ExchangePattern.InOnly,
                         seda('github-events').blockWhenFull(true)).id('to-github-events')
     }

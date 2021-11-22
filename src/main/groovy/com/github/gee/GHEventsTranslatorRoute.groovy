@@ -36,7 +36,6 @@ class GHEventsTranslatorRoute extends EndpointRouteBuilder {
     @Override
     void configure() throws Exception {
         from(seda('github-events').concurrentConsumers(1)).id('translator')
-                .split(body()).id('split-events-list')
                 .transform(delegatingTranslator()).id('translate-github-events')
                 .transform(appendDebugInfo()).id('append-debug-info-into-body')
                 .transform(populateDebugInfoHeaders()).id('populate-debug-info-into-headers')

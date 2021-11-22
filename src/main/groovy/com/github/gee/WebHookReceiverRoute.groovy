@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component
 
 /**
  * A route that listens for calls from Github webhooks.
+ *
+ * Outputs {@link GHEventPayload}.
  */
 @ConditionalOnProperty(
         value='method.retrieve.events',
