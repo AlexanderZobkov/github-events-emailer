@@ -9,47 +9,39 @@ import org.apache.camel.Expression
 import javax.mail.internet.MimeMessage
 
 /**
- * Appends webhook debug information to the body of {@link MimeMessage}.
+ * Appends debug/troubleshoot information to the body of {@link MimeMessage}.
  *
- * Adds X-GitHub-xxx headers from HTTP request to SMTP headers.
- * Adds X-GitHub-Delivery header to the email body.
- *
+ * Adds X-GitHub-Delivery header (if provided) from a webhook request from GitHub as email body.
  * It supports plain text and html emails.
+ *
+ * Expects a list of {@link MimeMessage} as input.
  */
 @CompileStatic
-class DebugInfoAppender implements Expression {
+class DebugInfoBodyAppender implements Expression {
 
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
         List<MimeMessage> body = exchange.message.getMandatoryBody(List<MimeMessage>)
         List<MimeMessage> answer = body.collect { MimeMessage mimeMessage ->
-            populateHeaders(mimeMessage, exchange)
             appendTail(mimeMessage, exchange)
             mimeMessage
         }
         return type.cast(answer)
     }
 
-    protected void populateHeaders(MimeMessage message, Exchange exchange) {
-        exchange.message.headers.each { String header, Object value ->
-            if (header.startsWithIgnoreCase('X-GitHub')) {
-                message.setHeader(header, value.toString())
-            }
-        }
-    }
-
     protected String calculateTailText(Exchange exchange) {
-        StringBuilder builder = new StringBuilder()
-        builder << '---\n'
-        ['X-GitHub-Delivery'].each { String header ->
-            builder << "${header}: ${exchange.message.headers.get(header, 'is absent')}\n"
-        }
-        return builder.toString()
+        List<String> tail = ['X-GitHub-Delivery',].collect { String header ->
+            Object value = exchange.message.headers.get(header)
+            value ? "${header}: ${value}" : null
+        }.grep() as List<String>
+        return tail ? (['---'] + tail).join('\n') : null
     }
 
     private void appendTail(MimeMessage message, Exchange exchange) {
         String tail = calculateTailText(exchange)
-        AppenderFactory.create(message).appendText(tail)
+        if (tail) {
+            AppenderFactory.create(message).appendText(tail)
+        }
     }
 
     private interface Appender {
