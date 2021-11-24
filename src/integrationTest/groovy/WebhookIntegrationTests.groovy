@@ -154,6 +154,10 @@ class WebhookIntegrationTests extends Specification {
 //            git add README data.bin
 //            git commit -m "Delete files"
 //
+//    # Use commit message and a line in existing text file with non-ascii characters
+//    echo '我的 Scala 项目 > README
+//            git add README
+//    git commit -m "Модификация текстового файла"
 
     Map<String, Object> getMessages() {
         RestTemplate restTemplate = new RestTemplate()
