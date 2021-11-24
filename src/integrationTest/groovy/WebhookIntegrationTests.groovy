@@ -90,6 +90,20 @@ class WebhookIntegrationTests extends Specification {
         Awaitility.await().atMost(30, TimeUnit.SECONDS).until { getMessages()['count'] == 1 }
 
         with(getMessages()) {
+            Map headers = it['items'][0]['Content']['Headers'].with { Map headers ->
+                headers.collectEntries { String key, List value -> [key, value.first()] }
+            }
+            with(headers) {
+                it['Content-Transfer-Encoding'] == '7bit'
+                it['Content-Type'] == 'text/plain; charset=us-ascii'
+                it['Subject'] =~ /New commit in repository ${repo}\/master - [0-9a-f]{5,40} Added a new text file/
+                it['To'] == 'team@corp.net'
+                it['X-Github-Delivery'] != null
+                it['X-Github-Event'] == 'push'
+                it['X-Github-Hook-Id'] != null
+                it['X-Github-events-emailer-CommitId'] =~ /[0-9a-f]{5,40}/
+                it['X-Github-events-emailer-Version'] != null
+            }
             String body = it['items'][0]['Content']['Body']
             with(body.readLines()) {
                 it.size() == 23
