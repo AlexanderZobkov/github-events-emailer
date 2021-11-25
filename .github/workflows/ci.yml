@@ -34,13 +34,14 @@ jobs:
 
       - name: Publish artifacts
         run: ./gradlew bootBuildImage --publishImage
+        if: github.event_name != 'pull_request'
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
 
       - name: Run integration tests
         run: ./gradlew integrationTest
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GH_REPO: ${{ secrets.GH_REPO }}
-
