@@ -85,17 +85,18 @@ class DigestPushCommitTest extends Specification {
     }
 
     AbstractGHPushSplitter.ExpandedGHPushEvent createGHPushEvent(List<GHCommit> commits) {
-        new AbstractGHPushSplitter.ExpandedGHPushEvent(event: mockGHEvent(),
+        new AbstractGHPushSplitter.ExpandedGHPushEvent(event: mockGHEventPayloadPush(),
                 commits: commits)
     }
 
-    GHEventPayload.Push mockGHEvent() {
+    GHEventPayload.Push mockGHEventPayloadPush(String repositoryName = 'Codertocat/Hello-World',
+                                               String pusherEmail='21031067+Codertocat@users.noreply.github.com') {
         GHEventPayload.Push pushEvent = Mock()
         GHEventPayload.Push.Pusher pusher = Mock()
         GHRepository repository = Mock()
         // https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
-        repository.fullName >> 'Codertocat/Hello-World'
-        pusher.email >> '21031067+Codertocat@users.noreply.github.com'
+        repository.fullName >> repositoryName
+        pusher.email >> pusherEmail
         pushEvent.repository >> repository
         pushEvent.pusher >> pusher
         pushEvent.ref >> 'refs/heads/master'
