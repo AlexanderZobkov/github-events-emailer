@@ -16,6 +16,8 @@ import java.time.ZonedDateTime
 
 /**
  * Translates {@link AbstractGHPushSplitter.ExpandedGHPushEvent} into {@link MimeMessage}.
+ *
+ * Produces output similar to output of the command: git log --pretty=format:'%h -%d %s (%cr) <%an>/<%cn>'
  */
 @CompileStatic
 class DigestPushCommit implements Expression {
@@ -65,7 +67,7 @@ class DigestPushCommit implements Expression {
                         builder.a(href: "${ghCommit.htmlUrl}", "${sha.take(7)}")
                         mkp.yield " - ${info.message.readLines().first()}"
                         builder.b("(${ago} day(s) ago)")
-                        mkp.yield "<${info.committer.name}>"
+                        mkp.yield "<${info.author.name}>/<${info.committer.name}>"
                     }
                 }
             }
