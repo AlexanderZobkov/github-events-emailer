@@ -11,8 +11,11 @@ import org.kohsuke.github.GHEventPayload
 import javax.mail.Session
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
+import java.time.Clock
 import java.time.Duration
+import java.time.Instant
 import java.time.ZonedDateTime
+import java.time.temporal.Temporal
 
 /**
  * Translates {@link AbstractGHPushSplitter.ExpandedGHPushEvent} into {@link MimeMessage}.
@@ -21,6 +24,8 @@ import java.time.ZonedDateTime
  */
 @CompileStatic
 class DigestPushCommit implements Expression {
+
+    Clock referencedClock
 
     @Override
     <T> T evaluate(Exchange exchange, Class<T> type) {
@@ -61,18 +66,21 @@ class DigestPushCommit implements Expression {
                 commits.reverse().each { ghCommit ->
                     String sha = ghCommit.SHA1
                     GHCommit.ShortInfo info = ghCommit.commitShortInfo
-                    Date commitDate = ghCommit.commitDate
-                    long ago = Duration.between(commitDate.toInstant(), ZonedDateTime.now()).toDays()
                     builder.div {
                         builder.a(href: "${ghCommit.htmlUrl}", "${sha.take(7)}")
                         mkp.yield " - ${info.message.readLines().first()}"
-                        builder.b("(${ago} day(s) ago)")
+                        builder.b("(${calculateCommitAgeInDays(ghCommit.commitDate.toInstant())} day(s) ago)")
                         mkp.yield "<${info.author.name}>/<${info.committer.name}>"
                     }
                 }
             }
         }
         return reply.toString()
+    }
+
+    private long calculateCommitAgeInDays(Instant commitDate) {
+        Temporal now = referencedClock ? ZonedDateTime.now(referencedClock) : ZonedDateTime.now()
+        Duration.between(commitDate, now).toDays()
     }
 
     @SuppressWarnings('UnusedPrivateMethodParameter')

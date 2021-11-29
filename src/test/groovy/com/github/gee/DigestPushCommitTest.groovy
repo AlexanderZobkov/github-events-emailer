@@ -13,17 +13,19 @@ import spock.lang.Specification
 import javax.mail.Message
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
-import java.text.SimpleDateFormat
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
 
 class DigestPushCommitTest extends Specification {
 
     DigestPushCommit digestPushCommit
     CamelContext context
 
-    SimpleDateFormat format = new SimpleDateFormat('EEE MMM dd HH:mm:ss zzz yyyy')
+    Clock clock = Clock.fixed(Instant.parse("2021-11-01T11:04:21Z"), ZoneId.of("UTC"));
 
     def setup() {
-        digestPushCommit = new DigestPushCommit()
+        digestPushCommit = new DigestPushCommit(referencedClock: clock)
         context = new DefaultCamelContext()
     }
 
@@ -55,7 +57,7 @@ class DigestPushCommitTest extends Specification {
                     Node b = Node.cast(divChildren[2])
                     b.name() == 'b'
                     b.attributes().size() == 0
-                    b.value()[0] == '(54 day(s) ago)'
+                    b.value()[0] == '(31 day(s) ago)'
                     divChildren[3] == '<Monalisa Octocat>/<Leo Octocat>\n' + '    '
                 }
             }
@@ -105,8 +107,8 @@ class DigestPushCommitTest extends Specification {
 
     GHCommit mockGHCommit(String sha = '6dcb09b5b57875f334f61aebed695e2e4193db5e',
                           String message = 'Fix all the bugs',
-                          Tuple3<String, String, Date> a = new Tuple3<>('Monalisa Octocat', 'mona@github.com', format.parse('Fri Oct 01 11:04:21 UTC 2021')),
-                          Tuple3<String, String, Date> c = new Tuple3<>('Leo Octocat', 'leo@github.com', format.parse('Fri Oct 01 11:04:22 UTC 2021'))) {
+                          Tuple3<String, String, Date> a = new Tuple3<>('Monalisa Octocat', 'mona@github.com', Date.from(Instant.parse("2021-10-01T11:04:21Z"))),
+                          Tuple3<String, String, Date> c = new Tuple3<>('Leo Octocat', 'leo@github.com', Date.from(Instant.parse("2021-10-01T11:04:22Z")))) {
         GHCommit ghCommit = Mock()
         GHCommit.ShortInfo shortInfo = Mock()
         GHCommit.GHAuthor author = Mock()
