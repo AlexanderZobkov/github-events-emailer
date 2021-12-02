@@ -58,7 +58,7 @@ class DigestPushCommitTest extends Specification {
                     b.name() == 'b'
                     b.attributes().size() == 0
                     b.value()[0] == '(31 day(s) ago)'
-                    divChildren[3] == '<Monalisa Octocat>/<Leo Octocat>\n' + '    '
+                    divChildren[3] == 'Monalisa Octocat/Leo Octocat\n' + '    '
                 }
             }
         }

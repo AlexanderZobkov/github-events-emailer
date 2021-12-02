@@ -20,7 +20,7 @@ import java.time.temporal.Temporal
 /**
  * Translates {@link AbstractGHPushSplitter.ExpandedGHPushEvent} into {@link MimeMessage}.
  *
- * Produces output similar to output of the command: git log --pretty=format:'%h -%d %s (%cr) <%an>/<%cn>'
+ * Produces output similar to output of the command: git log --pretty=format:'%h -%d %s (%cr) %an/%cn'
  */
 @CompileStatic
 class DigestPushCommit implements Expression {
@@ -70,7 +70,7 @@ class DigestPushCommit implements Expression {
                         builder.a(href: "${ghCommit.htmlUrl}", "${sha.take(7)}")
                         mkp.yield " - ${info.message.readLines().first()}"
                         builder.b("(${calculateCommitAgeInDays(ghCommit.commitDate.toInstant())} day(s) ago)")
-                        mkp.yield "<${info.author.name}>/<${info.committer.name}>"
+                        mkp.yield "${info.author.name}/${info.committer.name}"
                     }
                 }
             }
