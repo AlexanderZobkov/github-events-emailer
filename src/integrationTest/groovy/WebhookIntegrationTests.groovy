@@ -154,6 +154,9 @@ class WebhookIntegrationTests extends Specification {
 //            git add README data.bin
 //            git commit -m "Delete files"
 //
+//    # Empty commit
+//    git commit -m "Empty commit" --allow-empty
+//
 //    # Use commit message and a line in existing text file with non-ascii characters
 //    echo '我的 Scala 项目 > README
 //            git add README
