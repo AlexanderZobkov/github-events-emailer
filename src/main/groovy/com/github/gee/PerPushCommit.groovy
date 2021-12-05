@@ -43,19 +43,18 @@ class PerPushCommit implements Expression {
 
     private String subject(GHEventPayload.Push event, GHCommit commit) {
         GHCommit.ShortInfo info = commit.commitShortInfo
+        String commitMessage = info.message?.readLines()?.first()
         return 'New commit in repository ' +
                 "${event.repository.fullName}/${event.ref - 'refs/heads/' - 'refs/tags/'} " +
-                "- ${commit.SHA1.take(7)} ${info.message.readLines().first()}"
+                "- ${commit.SHA1.take(7)} ${commitMessage ?: 'No commit message'}"
     }
 
     @SuppressWarnings('DuplicateStringLiteral')
     private String body(GHEventPayload.Push event, GHCommit ghCommit) {
         StringBuilder builder = new StringBuilder()
 
-        String sha = ghCommit.SHA1
-
         builder << "URL: ${ghCommit.htmlUrl}\n"
-        builder << "SHA: ${sha}\n"
+        builder << "SHA: ${ghCommit.SHA1}\n"
 
         GHCommit.ShortInfo shortInfo = ghCommit.commitShortInfo
         GitUser author = shortInfo.author
@@ -67,22 +66,24 @@ class PerPushCommit implements Expression {
 
         builder << "Parent commit(s): ${ghCommit.parentSHA1s.join(', ')}\n"
 
-        builder << "Message: ${shortInfo.message}\n"
+        builder << "Message: ${shortInfo.message ?: 'No commit message'}\n"
 
         builder << '---\n'
-        builder << 'Files:\n'
-        builder << ghCommit
-                .files
-                .collect { GHCommit.File file -> "${file.status.capitalize()} ${file.fileName}" }
-                .join('\n') + '\n'
-
-        builder << '---\n'
-        try {
-            // Need to get a diff as GHCommit.File.patch contains only textual diffs
-            // however there is a need to get textual and binary diffs.
-            builder << commitDiffRetriever.getCommit(event.repository, sha)
-        } catch (IOException e) {
-            builder << 'GitHub says: ' + e.message
+        if (ghCommit.files) {
+            builder << 'Files:\n'
+            builder << ghCommit.files
+                    .collect { GHCommit.File file -> "${file.status.capitalize()} ${file.fileName}" }
+                    .join('\n') + '\n'
+            builder << '---\n'
+            try {
+                // Need to get a diff as GHCommit.File.patch contains only textual diffs
+                // however there is a need to get textual and binary diffs.
+                builder << commitDiffRetriever.getCommit(event.repository, ghCommit.SHA1)
+            } catch (IOException e) {
+                builder << 'GitHub says: ' + e.message
+            }
+        } else {
+            builder << 'Files: No changes\n'
         }
         return builder.toString()
     }

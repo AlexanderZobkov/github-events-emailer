@@ -107,6 +107,80 @@ class PerPushCommitTest extends Specification {
         }
     }
 
+    def "empty commit - message is not empty and commit is empty"() {
+        given:
+        Exchange exchange = new DefaultExchange(context)
+        exchange.in.body = createGHPushEvent([mockGHCommit(commitFiles:null)])
+        when:
+        List<MimeMessage> result = perPushCommit.evaluate(exchange, List<MimeMessage>)
+        then:
+        result.size() == 1
+        with(MimeMessage.cast(result.first())) {
+            it.from == InternetAddress.parse('21031067+Codertocat@users.noreply.github.com')
+            it.subject == 'New commit in repository Codertocat/Hello-World/master - 6dcb09b Fix all the bugs'
+            it.getRecipients(Message.RecipientType.TO) == null
+            it.contentType == 'text/plain'
+            Object content = it.getContent()
+            content != null
+            with(String.cast(content).readLines()) {
+                it.size() == 10
+                it[0] == 'URL: https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[1] == 'SHA: 6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[2] == 'Author: Monalisa Octocat / mona@github.com'
+                Matcher authorDateMatcher = it[3] =~ /AuthorDate: (.*)/
+                authorDateMatcher.find()
+                expectedAuthoredDate == format.parse(authorDateMatcher[0][1])
+                it[4] == 'Commit: Leo Octocat / leo@github.com'
+                Matcher commitDateMatcher = it[5] =~ /CommitDate: (.*)/
+                commitDateMatcher.find()
+                expectedCommitDate == format.parse(commitDateMatcher[0][1])
+                it[6] == 'Parent commit(s): 6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[7] == 'Message: Fix all the bugs'
+                it[8] == '---'
+                it[9] == 'Files: No changes'
+            }
+        }
+
+        0 * diffRetriever.getCommit(_, _)
+    }
+
+    def "empty commit - message and commit are empty"() {
+        given:
+        Exchange exchange = new DefaultExchange(context)
+        exchange.in.body = createGHPushEvent([mockGHCommit(message: null, commitFiles:null)])
+        when:
+        List<MimeMessage> result = perPushCommit.evaluate(exchange, List<MimeMessage>)
+        then:
+        result.size() == 1
+        with(MimeMessage.cast(result.first())) {
+            it.from == InternetAddress.parse('21031067+Codertocat@users.noreply.github.com')
+            it.subject == 'New commit in repository Codertocat/Hello-World/master - 6dcb09b No commit message'
+            it.getRecipients(Message.RecipientType.TO) == null
+            it.contentType == 'text/plain'
+            Object content = it.getContent()
+            content != null
+            with(String.cast(content).readLines()) {
+                it.size() == 10
+                it[0] == 'URL: https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[1] == 'SHA: 6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[2] == 'Author: Monalisa Octocat / mona@github.com'
+                Matcher authorDateMatcher = it[3] =~ /AuthorDate: (.*)/
+                authorDateMatcher.find()
+                expectedAuthoredDate == format.parse(authorDateMatcher[0][1])
+                it[4] == 'Commit: Leo Octocat / leo@github.com'
+                Matcher commitDateMatcher = it[5] =~ /CommitDate: (.*)/
+                commitDateMatcher.find()
+                expectedCommitDate == format.parse(commitDateMatcher[0][1])
+                it[6] == 'Parent commit(s): 6dcb09b5b57875f334f61aebed695e2e4193db5e'
+                it[7] == 'Message: No commit message'
+                it[8] == '---'
+                it[9] == 'Files: No changes'
+            }
+        }
+
+        0 * diffRetriever.getCommit(_, _)
+    }
+
     AbstractGHPushSplitter.ExpandedGHPushEvent createGHPushEvent(List<GHCommit> commits) {
         new AbstractGHPushSplitter.ExpandedGHPushEvent(event: mockGHEventPayloadPush(),
                 commits: commits)
@@ -126,33 +200,43 @@ class PerPushCommitTest extends Specification {
         pushEvent
     }
 
-    GHCommit mockGHCommit(String sha = '6dcb09b5b57875f334f61aebed695e2e4193db5e',
-                          String message = 'Fix all the bugs',
-                          Tuple3<String, String, Date> a = new Tuple3<>('Monalisa Octocat', 'mona@github.com', expectedAuthoredDate),
-                          Tuple3<String, String, Date> c = new Tuple3<>('Leo Octocat', 'leo@github.com', expectedCommitDate)) {
+    GHCommit mockGHCommit(Map<String, Object> args = [:]) {
+        Map<String, Object> defaultArgs = [
+                sha:'6dcb09b5b57875f334f61aebed695e2e4193db5e',
+                message:'Fix all the bugs',
+                a: new Tuple3<>('Monalisa Octocat', 'mona@github.com', expectedAuthoredDate),
+                c: new Tuple3<>('Leo Octocat', 'leo@github.com', expectedCommitDate),
+                commitFiles: [mockCommitFile()]]
+        defaultArgs << args
+
         GHCommit ghCommit = Mock()
         GHCommit.ShortInfo shortInfo = Mock()
         GHCommit.GHAuthor author = Mock()
         GHCommit.GHAuthor commiter = Mock()
         // https://docs.github.com/en/rest/reference/repos#get-a-commit
-        ghCommit.SHA1 >> sha
-        ghCommit.htmlUrl >> new URL("https://github.com/octocat/Hello-World/commit/${sha}")
-        ghCommit.commitDate >> a.v3
-        shortInfo.message >> message
-        author.name >> a.v1
-        author.email >> a.v2
+        ghCommit.SHA1 >> defaultArgs.sha
+        ghCommit.htmlUrl >> new URL("https://github.com/octocat/Hello-World/commit/${defaultArgs.sha}")
+        ghCommit.commitDate >> defaultArgs.a.v3
+        shortInfo.message >> defaultArgs.message
+        author.name >> defaultArgs.a.v1
+        author.email >> defaultArgs.a.v2
         shortInfo.author >> author
-        shortInfo.authoredDate >> a.v3
-        commiter.name >> c.v1
-        commiter.email >> c.v2
+        shortInfo.authoredDate >> defaultArgs.a.v3
+        commiter.name >> defaultArgs.c.v1
+        commiter.email >> defaultArgs.c.v2
         shortInfo.committer >> commiter
-        shortInfo.commitDate >> c.v3
+        shortInfo.commitDate >> defaultArgs.c.v3
         ghCommit.commitShortInfo >> shortInfo
         ghCommit.parentSHA1s >> ['6dcb09b5b57875f334f61aebed695e2e4193db5e',]
-        GHCommit.File file1 = Mock()
-        file1.fileName >> 'file1.txt'
-        file1.status >> 'modified'
-        ghCommit.files >> [file1,]
+        ghCommit.files >> defaultArgs.commitFiles
         ghCommit
     }
+
+    GHCommit.File mockCommitFile(){
+        GHCommit.File file = Mock()
+        file.fileName >> 'file1.txt'
+        file.status >> 'modified'
+        file
+    }
+
 }
