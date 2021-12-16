@@ -1,6 +1,7 @@
 package com.github.gee
 
 import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 import org.apache.camel.Exchange
 import org.apache.camel.Expression
 import org.kohsuke.github.GHCommit
@@ -16,6 +17,7 @@ import javax.mail.internet.MimeMessage
  * Translates {@link AbstractGHPushSplitter.ExpandedGHPushEvent} into {@link MimeMessage}.
  */
 @CompileStatic
+@Slf4j
 class PerPushCommit implements Expression {
 
     AbstractGHCommitRetriever commitDiffRetriever
@@ -80,6 +82,11 @@ class PerPushCommit implements Expression {
                 // however there is a need to get textual and binary diffs.
                 builder << commitDiffRetriever.getCommit(event.repository, ghCommit.SHA1)
             } catch (IOException e) {
+                log.error('Can\'t get the diff from GitHub for the commit {} in the repository {}/{}',
+                        ghCommit.SHA1,
+                        event.repository.ownerName,
+                        event.repository.name,
+                        e)
                 builder << 'GitHub says: ' + e.message
             }
         } else {
