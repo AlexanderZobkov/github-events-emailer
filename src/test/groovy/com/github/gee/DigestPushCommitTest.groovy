@@ -53,12 +53,14 @@ class DigestPushCommitTest extends Specification {
                     a.attributes().size() == 1
                     a.attributes()['href'] == 'https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e'
                     a.value()[0] == '6dcb09b'
-                    divChildren[1] == ' - Fix all the bugs\n' + '      '
+                    Node span1 = Node.cast(divChildren[1])
+                    span1.value()[0] == ' - Fix all the bugs '
                     Node b = Node.cast(divChildren[2])
                     b.name() == 'b'
                     b.attributes().size() == 0
                     b.value()[0] == '(31 day(s) ago)'
-                    divChildren[3] == 'Monalisa Octocat/Leo Octocat\n' + '    '
+                    Node span2 = Node.cast(divChildren[3])
+                    span2.value()[0] == ' Monalisa Octocat/Leo Octocat'
                 }
             }
         }

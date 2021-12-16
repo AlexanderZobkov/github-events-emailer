@@ -68,9 +68,9 @@ class DigestPushCommit implements Expression {
                     GHCommit.ShortInfo info = ghCommit.commitShortInfo
                     builder.div {
                         builder.a(href: "${ghCommit.htmlUrl}", "${sha.take(7)}")
-                        mkp.yield " - ${info.message.readLines().first()}"
+                        builder.span " - ${info.message.readLines().first()} "
                         builder.b("(${calculateCommitAgeInDays(ghCommit.commitDate.toInstant())} day(s) ago)")
-                        mkp.yield "${info.author.name}/${info.committer.name}"
+                        builder.span " ${info.author.name}/${info.committer.name}"
                     }
                 }
             }
