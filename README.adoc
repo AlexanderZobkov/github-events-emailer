@@ -108,6 +108,10 @@ docker run -p 8080:8080 -e "github.oauthToken=<token>" -e "..." docker.io/zobkov
 You can adjust the configuration of the instance by passing one or more environment variables on the `docker run` command line.
 See the list of available variables in link:src/main/resources/application.properties[application.properties].
 
+==== Kubernetes
+
+To deploy the application on kubernetes cluster you can refer to several example manifests at link:../../wiki/Kubernetes[wiki page].
+
 === Using HTTPS
 
 The application itself supports accept connections with the plain HTTP only.
