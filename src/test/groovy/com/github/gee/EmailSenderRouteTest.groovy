@@ -10,13 +10,11 @@ import org.apache.camel.builder.AdviceWith
 import org.apache.camel.builder.AdviceWithRouteBuilder
 import org.apache.camel.component.mock.MockEndpoint
 import org.apache.camel.spring.SpringCamelContext
-import org.apache.camel.spring.javaconfig.CamelConfiguration
-import org.apache.camel.test.spring.CamelSpringBootRunner
-import org.apache.camel.test.spring.UseAdviceWith
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.apache.camel.spring.boot.CamelAutoConfiguration
+import org.apache.camel.test.spring.junit5.UseAdviceWith
+import org.apache.camel.test.spring.junit5.CamelSpringTest
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,17 +24,19 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests
 
 import javax.mail.MessagingException
 import javax.mail.SendFailedException
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
-@RunWith(CamelSpringBootRunner.class)
+import static org.junit.jupiter.api.Assertions.*
+
+@CamelSpringTest
 @ContextConfiguration(classes = [ContextConfig])
 @UseAdviceWith
-class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class EmailSenderRouteTest {
 
     @EndpointInject("mock:result")
     protected MockEndpoint resultEndpoint
@@ -47,7 +47,7 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     SpringCamelContext camelContext
 
-    @Before
+    @BeforeEach
     void setup() {
         AdviceWith.adviceWith(camelContext.getRouteDefinition("email-sender"), camelContext, new AdviceWithRouteBuilder() {
             @Override
@@ -59,7 +59,6 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         template.start()
     }
 
-    @DirtiesContext
     @Test
     void testSendOneEmail() throws Exception {
         resultEndpoint.expectedBodiesReceived('commit')
@@ -67,7 +66,6 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         resultEndpoint.assertIsSatisfied()
     }
 
-    @DirtiesContext
     @Test
     void testListEmailsEmpty() throws Exception {
         resultEndpoint.expectedMessageCount(0)
@@ -75,7 +73,6 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         resultEndpoint.assertIsSatisfied()
     }
 
-    @DirtiesContext
     @Test
     void testListEmailsMultiple() throws Exception {
         resultEndpoint.expectedBodiesReceived((1..3).collect { 'commit_' + it })
@@ -83,7 +80,6 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         resultEndpoint.assertIsSatisfied();
     }
 
-    @DirtiesContext
     @Test
     void testNoResponseFromServer() throws Exception {
         resultEndpoint.resultWaitTime = 10000
@@ -98,10 +94,9 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         List<String> actualBodies = resultEndpoint.receivedExchanges.collect {
             it.message.getMandatoryBody(MimeMessage).getContent() as String
         }
-        Assert.assertEquals(expectedBodies, actualBodies);
+        assertEquals(expectedBodies, actualBodies);
     }
 
-    @DirtiesContext
     @Test
     void testCantConnectServer() throws Exception {
         resultEndpoint.resultWaitTime = 10000
@@ -118,10 +113,9 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         List<String> actualBodies = resultEndpoint.receivedExchanges.collect {
             it.message.getMandatoryBody(MimeMessage).getContent() as String
         }
-        Assert.assertEquals(expectedBodies, actualBodies);
+        assertEquals(expectedBodies, actualBodies);
     }
 
-    @DirtiesContext
     @Test
     void testSendFailed() throws Exception {
         resultEndpoint.resultWaitTime = 10000
@@ -140,7 +134,7 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
         List<String> actualBodies = resultEndpoint.receivedExchanges.collect {
             it.message.getMandatoryBody(MimeMessage).getContent() as String
         }
-        Assert.assertEquals(expectedBodies, actualBodies)
+        assertEquals(expectedBodies, actualBodies)
     }
 
     private MimeMessage buildMimeMessage(String body) {
@@ -152,8 +146,8 @@ class EmailSenderRouteTest extends AbstractJUnit4SpringContextTests {
     }
 
     @Configuration
-    @Import(EmailSenderRoute)
-    static class ContextConfig extends CamelConfiguration {
+    @Import([CamelAutoConfiguration, EmailSenderRoute])
+    static class ContextConfig {
 
         @Bean
         static PropertySourcesPlaceholderConfigurer properties() {
