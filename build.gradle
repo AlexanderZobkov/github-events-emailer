@@ -68,7 +68,7 @@ dependencies {
 
     integrationTestImplementation 'org.testcontainers:spock:1.16.3'
     integrationTestImplementation 'org.codehaus.groovy:groovy-json'
-    integrationTestImplementation 'com.github.alexdlaird:java-ngrok:1.5.5'
+    integrationTestImplementation 'com.github.alexdlaird:java-ngrok:1.5.6'
     integrationTestImplementation 'org.eclipse.jgit:org.eclipse.jgit:6.0.0.202111291000-r'
     integrationTestImplementation 'org.awaitility:awaitility:4.1.1'
 }
