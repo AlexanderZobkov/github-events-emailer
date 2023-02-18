@@ -77,6 +77,11 @@ configurations {
     runtimeClasspath.shouldResolveConsistentlyWith(compileClasspath)
 }
 
+java {
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
 task sourceJar(type: Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allSource
