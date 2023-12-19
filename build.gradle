@@ -39,7 +39,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.apache.camel.springboot:camel-spring-boot-dependencies:3.21.0"
+        mavenBom "org.apache.camel.springboot:camel-spring-boot-dependencies:4.3.0"
         mavenBom "org.springframework:spring-framework-bom:5.3.23"
         mavenBom 'org.codehaus.groovy:groovy-bom:3.0.10'
     }
