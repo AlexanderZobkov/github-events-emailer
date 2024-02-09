@@ -66,7 +66,7 @@ dependencies {
     testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.spockframework:spock-junit4'
 
-    integrationTestImplementation 'org.testcontainers:spock:1.18.3'
+    integrationTestImplementation 'org.testcontainers:spock:1.19.5'
     integrationTestImplementation 'org.codehaus.groovy:groovy-json'
     integrationTestImplementation 'com.github.alexdlaird:java-ngrok:2.2.3'
     integrationTestImplementation 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
