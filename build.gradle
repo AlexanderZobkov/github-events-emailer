@@ -1,7 +1,7 @@
 plugins {
     id 'groovy'
     id 'org.springframework.boot' version '2.7.5'
-    id 'io.spring.dependency-management' version '1.1.3'
+    id 'io.spring.dependency-management' version '1.1.5'
     id "ru.vyarus.quality" version "5.0.0"
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
     id "maven-publish"
@@ -69,7 +69,7 @@ dependencies {
     integrationTestImplementation 'org.testcontainers:spock:1.19.5'
     integrationTestImplementation 'org.codehaus.groovy:groovy-json'
     integrationTestImplementation 'com.github.alexdlaird:java-ngrok:2.2.3'
-    integrationTestImplementation 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
+    integrationTestImplementation 'org.eclipse.jgit:org.eclipse.jgit:7.0.0.202409031743-r'
     integrationTestImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
