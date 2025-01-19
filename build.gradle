@@ -7,8 +7,8 @@ plugins {
     id "maven-publish"
 }
 
-group 'com.github.alexander-zobkov'
-version '1.0-SNAPSHOT'
+group = 'com.github.alexander-zobkov'
+version = '1.0-SNAPSHOT'
 
 sourceSets {
     integrationTest {
@@ -19,7 +19,7 @@ sourceSets {
 
 // https://github.com/gradle/gradle/issues/17236
 tasks.withType(Copy).all {
-    duplicatesStrategy 'exclude'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 bootBuildImage {
@@ -78,8 +78,9 @@ configurations {
 }
 
 java {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 task sourceJar(type: Jar) {
@@ -116,10 +117,10 @@ bootRun {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifact bootJar
-            groupId rootProject.group
-            artifactId rootProject.name
-            version rootProject.version
+            artifact(bootJar)
+            groupId = rootProject.group
+            artifactId = rootProject.name
+            version = rootProject.version
             pom.packaging = 'jar'
         }
     }
@@ -135,8 +136,8 @@ configurations {
 }
 
 task integrationTest(type: Test) {
-    group 'verification'
-    description "Runs integration tests"
+    group = 'verification'
+    description = "Runs integration tests"
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     useJUnitPlatform()
