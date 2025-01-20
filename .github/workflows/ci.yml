@@ -54,10 +54,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GH_REPO: ${{ secrets.GH_REPO }}
 
-      - name: Integration tests report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Junit Tests       
-          path: "build/test-results/integrationTest/*.xml"
-          reporter: java-junit
