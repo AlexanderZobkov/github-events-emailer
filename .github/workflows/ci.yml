@@ -37,7 +37,7 @@ jobs:
         if: success() || failure()
         with:
           name: Junit Tests       
-          path: "**/build/test-results/test" 
+          path: "build/test-results/**/*.xml"
           reporter: java-junit
 
       - name: Publish artifacts
