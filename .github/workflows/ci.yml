@@ -31,6 +31,14 @@ jobs:
 
       - name: Build artifacts
         run: ./gradlew clean build
+      
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Junit Tests       
+          path: "**/build/test-results/test" 
+          reporter: java-junit
 
       - name: Publish artifacts
         run: ./gradlew bootBuildImage --publishImage
