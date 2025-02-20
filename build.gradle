@@ -66,7 +66,7 @@ dependencies {
     testImplementation 'org.spockframework:spock-core'
     testImplementation 'org.spockframework:spock-junit4'
 
-    integrationTestImplementation ('org.testcontainers:spock:1.19.5') {
+    integrationTestImplementation ('org.testcontainers:spock:1.20.5') {
         exclude group: 'org.spockframework', module: 'spock-core'
     }
     integrationTestImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
